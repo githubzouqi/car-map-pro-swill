@@ -1,0 +1,139 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.pc2.media.fragment.AddressConfigFragment">
+
+    <LinearLayout
+        android:weightSum="1"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_gravity="center"
+            android:textColor="@android:color/black"
+            android:id="@+id/tv_address_config"
+            android:layout_alignParentTop="true"
+            android:layout_margin="10dp"
+            android:textSize="20sp"
+            android:text="信息配置"
+            android:layout_width="wrap_content"
+            android:layout_weight="0.1"
+            android:layout_height="0dp" />
+
+        <View
+            android:id="@+id/view"
+            android:background="@android:color/darker_gray"
+            android:layout_width="match_parent"
+            android:layout_height="1px"/>
+
+        <ScrollView
+            android:layout_weight="0.8"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <LinearLayout
+                android:id="@+id/linear_info_config"
+                android:padding="10dp"
+                android:layout_centerInParent="true"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_rabbitmq_host"
+                    android:padding="10dp"
+                    android:textSize="12sp"
+                    android:background="@drawable/popwindow_view_shape"
+                    android:inputType="textMultiLine"
+                    android:hint="请输入RabbitMQ主机地址\n（例：192.168.1.201）"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:id="@+id/et_rabbitmq_port"
+                    android:padding="10dp"
+                    android:textSize="12sp"
+                    android:background="@drawable/popwindow_view_shape"
+                    android:inputType="number"
+                    android:hint="请输入RabbitMQ端口\n（例：6666）"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:id="@+id/et_rabbitmq_username"
+                    android:padding="10dp"
+                    android:textSize="12sp"
+                    android:background="@drawable/popwindow_view_shape"
+                    android:inputType="textMultiLine"
+                    android:hint="请输入RabbitMQ用户名"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:id="@+id/et_rabbitmq_pasword"
+                    android:padding="10dp"
+                    android:textSize="12sp"
+                    android:background="@drawable/popwindow_view_shape"
+                    android:inputType="textPassword"
+                    android:hint="请输入RabbitMQ密码"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:layout_marginTop="2dp"
+                    android:id="@+id/et_interface_address"
+                    android:padding="10dp"
+                    android:textSize="12sp"
+                    android:background="@drawable/popwindow_view_shape"
+                    android:inputType="textMultiLine"
+                    android:hint="请输入接口地址及端口号\n（例：192.168.1.201:12009）"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/check_rember_input"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:textColor="@android:color/black"
+                        android:text="记住输入信息配置"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <View
+                    android:visibility="gone"
+                    android:id="@+id/view1"
+                    android:background="@android:color/darker_gray"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <Button
+                    android:layout_marginTop="30dp"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_selector_rect"
+                    android:text="确定"
+                    android:id="@+id/btn_complete_address_input"
+                    android:layout_width="match_parent"
+                    android:layout_weight="0.1"
+                    android:layout_height="0dp" />
+            </LinearLayout>
+
+        </ScrollView>
+
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/et_car_id"
+        android:layout_margin="2dp"
+        android:padding="10dp"
+        android:background="@drawable/popwindow_view_shape"
+        android:inputType="number"
+        android:hint="请输入小车id"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_call_car"
+        android:background="@drawable/button_selector"
+        android:layout_gravity="center"
+        android:text="确定"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

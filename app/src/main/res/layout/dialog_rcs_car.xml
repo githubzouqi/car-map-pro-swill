@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="2dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:hint="请输入小车的id"
+        android:inputType="number"
+        android:gravity="center"
+        android:padding="10dp"
+        android:visibility="gone"
+        android:background="@drawable/popwindow_view_shape"
+        android:layout_width="match_parent"
+        android:id="@+id/et_rcs_carIdInput"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_chargingPileError"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:hint="请输入充电桩类型"
+        android:inputType="text"
+        android:gravity="center"
+        android:padding="10dp"
+        android:visibility="gone"
+        android:background="@drawable/popwindow_view_shape"
+        android:layout_width="match_parent"
+        android:id="@+id/et_rcs_chargerType"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:hint="请输入充电桩的id"
+        android:inputType="number"
+        android:gravity="center"
+        android:padding="10dp"
+        android:visibility="gone"
+        android:background="@drawable/popwindow_view_shape"
+        android:layout_width="match_parent"
+        android:id="@+id/et_rcs_chargerId"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:hint="请输入货架 ID"
+        android:inputType="number"
+        android:gravity="center"
+        android:padding="10dp"
+        android:visibility="gone"
+        android:background="@drawable/popwindow_view_shape"
+        android:layout_width="match_parent"
+        android:id="@+id/et_rcs_podId"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:hint="请输入目标地址码"
+        android:inputType="number"
+        android:gravity="center"
+        android:padding="10dp"
+        android:visibility="gone"
+        android:background="@drawable/popwindow_view_shape"
+        android:layout_width="match_parent"
+        android:id="@+id/et_rcs_addressCodeId"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:background="@drawable/button_selector_rect"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:text="确定"
+        android:id="@+id/btn_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

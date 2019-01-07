@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/linear_work_site"
+                android:padding="2dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/black"
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"/>
+
+                <ImageView
+                    android:layout_marginLeft="10dp"
+                    android:src="@mipmap/workstack"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/str_mapIntroduction_worksite"
+                    android:textSize="8sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1px"/>
+
+            <LinearLayout
+                android:id="@+id/linear_charging_pile"
+                android:padding="2dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/black"
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"/>
+
+                <ImageView
+                    android:layout_marginLeft="10dp"
+                    android:src="@mipmap/charger_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/str_mapIntroduction_charger"
+                    android:textSize="8sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                />
+
+            <LinearLayout
+                android:id="@+id/linear_charging_pile_haveChargingCar"
+                android:padding="2dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/black"
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"/>
+
+                <RelativeLayout
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_centerInParent="true"
+                        android:src="@mipmap/charger_icon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
+
+                    <View
+                        android:visibility="gone"
+                        android:background="@drawable/car_black_circle_introduction_drawable"
+                        android:layout_centerInParent="true"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"/>
+
+                    <TextView
+                        android:textColor="@android:color/holo_red_dark"
+                        android:layout_centerInParent="true"
+                        android:text="ID"
+                        android:textSize="6sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </RelativeLayout>
+
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/str_mapIntroduction_charger_car"
+                    android:textSize="8sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1px"/>
+
+            <LinearLayout
+                android:id="@+id/linear_car_uncharge"
+                android:padding="2dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/black"
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"/>
+
+                <RelativeLayout
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/car_rect_introduction_drawable"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp">
+
+                    <View
+                        android:background="@drawable/car_black_circle_introduction_drawable"
+                        android:layout_centerInParent="true"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"/>
+
+                    <TextView
+                        android:textColor="@android:color/white"
+                        android:text="ID"
+                        android:layout_centerInParent="true"
+                        android:textSize="6sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/str_mapIntroduction_car_uncharge"
+                    android:textSize="8sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1px"/>
+
+            <LinearLayout
+                android:id="@+id/linear_car_charging"
+                android:padding="2dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/black"
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"/>
+
+                <RelativeLayout
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/car_rect_introduction_drawable"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp">
+
+                    <View
+                        android:background="@drawable/car_white_circle_introduction_drawable"
+                        android:layout_centerInParent="true"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"/>
+
+                    <TextView
+                        android:textColor="@android:color/holo_red_dark"
+                        android:text="ID"
+                        android:layout_centerInParent="true"
+                        android:textSize="6sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/str_mapIntroduction_car_charging"
+                    android:textSize="8sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1px"/>
+
+            <LinearLayout
+                android:id="@+id/linear_pod"
+                android:padding="2dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/black"
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"/>
+
+                <RelativeLayout
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/pod_rect_introduction_drawable"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp">
+
+                    <View
+                        android:id="@+id/view_pod_site1"
+                        android:layout_marginTop="2dp"
+                        android:background="@color/podAngleSite"
+                        android:layout_centerHorizontal="true"
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"/>
+
+                    <View
+                        android:layout_marginTop="2dp"
+                        android:layout_marginLeft="2dp"
+                        android:layout_alignParentLeft="true"
+                        android:background="@color/podAngleSite"
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"/>
+
+                    <View
+                        android:layout_marginTop="2dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_alignParentRight="true"
+                        android:background="@color/podAngleSite"
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"/>
+
+                    <TextView
+                        android:textColor="@android:color/white"
+                        android:text="ID"
+                        android:layout_centerInParent="true"
+                        android:textSize="6sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/str_mapIntroduction_pod"
+                    android:textSize="8sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1px"/>
+
+            <LinearLayout
+                android:id="@+id/linear_unwalked_area"
+                android:padding="2dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/black"
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"/>
+
+                <View
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/unWalkedCell"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"/>
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/str_mapIntroduction_unwalkedarea"
+                    android:textSize="8sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1px"/>
+
+
+            <LinearLayout
+                android:id="@+id/linear_rotate_area"
+                android:padding="2dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/black"
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"/>
+
+                <View
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/rotate"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"/>
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/str_mapIntroduction_rotatearea"
+                    android:textSize="8sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1px"/>
+
+            <LinearLayout
+                android:id="@+id/linear_storage_area"
+                android:padding="2dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/black"
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"/>
+
+                <View
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/storage"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"/>
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/str_mapIntroduction_storage"
+                    android:textSize="8sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1px"/>
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/linear_carCurrentPath1"
+                android:padding="10dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/black"
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"/>
+
+                <View
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/color_carLock"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"/>
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/str_mapIntroduction_carCurrentPath_lock"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:visibility="gone"
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1px"/>
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/linear_carCurrentPath2"
+                android:padding="10dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/black"
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"/>
+
+                <View
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/color_carall"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"/>
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/str_mapIntroduction_carCurrentPath_unlock"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1px"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

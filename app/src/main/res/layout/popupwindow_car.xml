@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_margin="10dp"
+                android:textSize="18sp"
+                android:text="@string/box_car_id"
+                android:id="@+id/tv_carId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_margin="10dp"
+                android:text="@string/box_car_pos"
+                android:textSize="18sp"
+                android:id="@+id/tv_carPos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_margin="10dp"
+                android:text="@string/box_car_path"
+                android:textSize="18sp"
+                android:id="@+id/tv_carPath"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/linear_pod"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_margin="10dp"
+                    android:textSize="18sp"
+                    android:text="@string/box_pod_id"
+                    android:id="@+id/tv_podId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_margin="10dp"
+                    android:text="@string/box_pod_pos"
+                    android:textSize="18sp"
+                    android:id="@+id/tv_podPos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <Button
+                android:background="@drawable/button_corner_drawable"
+                android:id="@+id/btn_resendPath"
+                android:visibility="gone"
+                android:text="@string/car_resend_path"
+                android:layout_margin="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:background="@drawable/button_corner_drawable"
+                    android:id="@+id/btn_up_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/btn_left"
+                    android:layout_alignBottom="@+id/btn_left"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/str_carUp"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    />
+
+                <Button
+                    android:visibility="invisible"
+                    android:id="@+id/btn_left"
+                    android:layout_toLeftOf="@+id/btn_up_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:visibility="invisible"
+                    android:id="@+id/btn_right"
+                    android:layout_toRightOf="@+id/btn_up_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:background="@drawable/button_corner_drawable"
+                    android:id="@+id/btn_left_one"
+                    android:layout_below="@+id/btn_up_one"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignRight="@+id/btn_left"
+                    android:text="@string/str_carLeft"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:background="@drawable/button_corner_drawable"
+                    android:id="@+id/btn_right_one"
+                    android:layout_below="@+id/btn_up_one"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignLeft="@+id/btn_right"
+                    android:text="@string/str_carRight"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:background="@drawable/button_corner_drawable"
+                    android:id="@+id/btn_down_one"
+                    android:layout_below="@+id/btn_left_one"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/str_carDown"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:textColor="@android:color/darker_gray"
+                android:padding="10dp"
+                android:gravity="center"
+                android:textSize="12sp"
+                android:text="@string/car_operate_tip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:background="@color/lighterBlue"
+                android:layout_width="match_parent"
+                android:layout_height="10px"/>
+
+            <Button
+                android:id="@+id/btn_startEmptyDrive"
+                android:text="开始空车调度"
+                android:textColor="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:weightSum="1"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:visibility="gone"
+                    android:id="@+id/et_startPos"
+                    android:gravity="center"
+                    android:hint="起始点"
+                    android:inputType="number"
+                    android:padding="6dp"
+                    android:background="@drawable/popwindow_view_shape"
+                    android:layout_weight="0.5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:visibility="gone"
+                    android:id="@+id/et_desPos"
+                    android:hint="终点"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:padding="6dp"
+                    android:background="@drawable/popwindow_view_shape"
+                    android:layout_weight="0.5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginTop="2dp"
+                android:id="@+id/tv_routeInfo"
+                android:padding="10dp"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/linear_emptyDrive"
+                android:layout_marginTop="2dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:layout_margin="5dp"
+                    android:background="@drawable/button_selector_rect"
+                    android:id="@+id/btn_createEmptyRoute"
+                    android:text="空车路径生成"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
+
+                <Button
+                    android:layout_margin="5dp"
+                    android:background="@drawable/button_selector_rect"
+                    android:id="@+id/btn_driveEmptyCar"
+                    android:text="空车调度"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:background="@drawable/button_selector_rect"
+                android:id="@+id/btn_seeAndOperate"
+                android:text="@string/str_carAll_viewOperation"
+                android:textColor="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+
+            <Button
+                android:visibility="gone"
+                android:background="@drawable/button_selector_rect"
+                android:id="@+id/btn_showFullRoute"
+                android:layout_marginTop="1dp"
+                android:text="@string/str_carAll_showFullPath"
+                android:textColor="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+
+            <Button
+                android:visibility="gone"
+                android:background="@drawable/button_selector_rect"
+                android:id="@+id/btn_cancelFullRoute"
+                android:layout_marginTop="1dp"
+                android:text="@string/str_carAll_cancelFullPath"
+                android:textColor="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="2dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_other_tip_title"
+        android:background="@color/colorAccent"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:text="提示"
+        android:textSize="16sp"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <View
+        android:background="@android:color/darker_gray"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <EditText
+        android:hint="请输入小车的id"
+        android:inputType="number"
+        android:gravity="center"
+        android:padding="10dp"
+        android:visibility="gone"
+        android:background="@drawable/popwindow_view_shape"
+        android:layout_width="match_parent"
+        android:id="@+id/et_carIdInput"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:visibility="gone"
+        android:hint="请输入POD的id"
+        android:inputType="number"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@drawable/popwindow_view_shape"
+        android:layout_width="match_parent"
+        android:id="@+id/et_podIdInput"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:visibility="gone"
+        android:hint="请输入地址"
+        android:inputType="number"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@drawable/popwindow_view_shape"
+        android:layout_width="match_parent"
+        android:id="@+id/et_addrInput"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:hint="请输入充电桩类型"
+        android:inputType="number"
+        android:gravity="center"
+        android:padding="10dp"
+        android:visibility="gone"
+        android:background="@drawable/popwindow_view_shape"
+        android:layout_width="match_parent"
+        android:id="@+id/et_other_chargerType"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:hint="请输入充电桩的id"
+        android:inputType="number"
+        android:gravity="center"
+        android:padding="10dp"
+        android:visibility="gone"
+        android:background="@drawable/popwindow_view_shape"
+        android:layout_width="match_parent"
+        android:id="@+id/et_other_chargerId"
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:visibility="gone"
+        android:id="@+id/sp_robotAct"
+        android:layout_width="match_parent"
+        android:layout_margin="10dp"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:background="@drawable/button_selector_rect"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:text="发送"
+        android:id="@+id/btn_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

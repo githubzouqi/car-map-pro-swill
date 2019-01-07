@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.SplashActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/linear_page1_webiew"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="60dp"
+        android:text="@string/splash_slogan"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginBottom="20dp"
+        android:id="@+id/tv_mushiny"
+        android:layout_alignParentBottom="true"
+        android:textSize="12sp"
+        android:layout_centerHorizontal="true"
+        android:text="Copyright @ 2017-2018 MUSHINY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_company"
+        android:layout_marginBottom="10dp"
+        android:textSize="16sp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/tv_mushiny"
+        android:text="牧星智能"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/tv_company"
+        android:src="@mipmap/splash_icon_round"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+</RelativeLayout>

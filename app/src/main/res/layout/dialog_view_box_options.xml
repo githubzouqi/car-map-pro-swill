@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@drawable/layout_rounded_corner_drawable"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_options_lock_circle"
+        android:clickable="true"
+        android:foreground="@drawable/water_ripple_foreground"
+        android:text="建立安全区域"
+        android:textColor="@color/colorAccent"
+        android:padding="10dp"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:background="@color/colorAccent"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <TextView
+        android:id="@+id/tv_options_unlock_circle"
+        android:text="解除安全区域"
+        android:clickable="true"
+        android:foreground="@drawable/water_ripple_foreground"
+        android:textColor="@color/colorAccent"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:id="@+id/view_options_resendOrder"
+        android:visibility="gone"
+        android:background="@color/colorAccent"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <TextView
+        android:id="@+id/tv_options_resendOrder"
+        android:text="重发任务"
+        android:clickable="true"
+        android:visibility="gone"
+        android:textColor="@color/colorAccent"
+        android:padding="10dp"
+        android:foreground="@drawable/water_ripple_foreground"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:visibility="gone"
+        android:background="@color/colorAccent"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_options_other"
+        android:text="其他"
+        android:textColor="@color/colorAccent"
+        android:padding="10dp"
+        android:clickable="true"
+        android:foreground="@drawable/water_ripple_foreground"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

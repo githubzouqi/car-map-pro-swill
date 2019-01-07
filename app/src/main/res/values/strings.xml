@@ -1,0 +1,123 @@
+<resources>
+    <string name="app_name">史必诺地图</string>
+
+    <string name="splash_slogan">史必诺地图\n智能监控</string>
+
+    <string name="please_draw_map_first">明察秋毫，尽在掌控</string>
+    <string name="confirm">确认</string>
+
+    <string name="row_hint">请输入行数</string>
+    <string name="column_hint">请输入列数</string>
+
+    <string name="box_car_id">小车的ID为</string>
+    <string name="box_car_pos">小车在地图上的坐标为</string>
+    <string name="box_car_path">小车当全路径信息</string>
+
+    <string name="box_pod_id">POD的ID为</string>
+    <string name="box_pod_pos">POD在地图上的坐标为</string>
+
+    <string name="map_box_pos">当前地图格坐标为</string>
+
+    <string name="str_initMapData">2、进行地图的绘制</string>
+    <string name="str_initCarData">3、开始小车的监控</string>
+    <string name="str_initStorageData">选择仓库和地图</string>
+    <string name="str_step1">连接RabbitMQ</string>
+    <string name="str_step2">STEP 2</string>
+    <string name="str_step3">STEP 3</string>
+    <string name="str_map_info">地图信息</string>
+    <string name="str_map_introduction">地图说明</string>
+    <string name="str_map_reset">地图复位</string>
+    <string name="str_map_drawAgain">地图重选</string>
+    <string name="str_map_carLockUnLock">锁格/解锁</string>
+    <string name="str_map_carBatteryInfo">小车电量</string>
+    <string name="str_showAllCarLockUnlockPath">显示小车锁格、未锁格路径</string>
+    <string name="str_cancelAllCarLockUnlockPath">取消小车锁格、未锁格路径显示</string>
+
+    <string name="str_carUp">上移一格</string>
+    <string name="str_carLeft">左移一格</string>
+    <string name="str_carRight">右移一格</string>
+    <string name="str_carDown">下移一格</string>
+    <string name="car_resend_path">重发任务</string>
+    <string name="car_operate_tip">提示：当前点位P，左移一格即P-1，右移一格即P+1\n左右确定后，上下也就确定了</string>
+
+
+    <string name="str_carRouteEmpty">空</string>
+
+    <string name="str_carAll_viewOperation">查看和操作</string>
+    <string name="str_carAll_showFullPath">显示小车全路径</string>
+    <string name="str_carAll_cancelFullPath">取消全路径显示</string>
+    <string name="str_carAll_showCurrentPath">显示小车当前路径</string>
+    <string name="str_carAll_cancelCurrentPath">取消当前路径显示</string>
+
+    <!-- wcs小车控制部分 -->
+    <string name="wcs_check_car_status">查看某小车的状态</string>
+    <string name="wcs_check_pod_status">查看POD信息</string>
+    <string name="wcs_check_addr_status">查看地址状态</string>
+    <string name="wcs_resend_order">重发任务</string>
+    <string name="wcs_robot_act">控制小车上下左右</string>
+    <string name="wcs_robot_offline">下线某小车</string>
+    <string name="wcs_drive_pod">驱动pod去目标点位（可用存储区）</string>
+    <string name="wcs_update_pod_status">更新POD地址</string>
+    <string name="wcs_release_pod_status">释放POD状态</string>
+    <string name="wcs_update_AddrState">更新地址状态\n（status:Available lockedby:0）</string>
+    <string name="wcs_robot2Charge">下发充电任务</string>
+    <string name="wcs_autoAssignAdnDrivePod">自动分配POD回存储区</string>
+    <string name="wcs_driveRobotCarryPod">驱动小车驮pod去某地</string>
+    <string name="wcs_driveRobot">驱动小车去某地</string>
+
+    <!--地图说明-->
+    <string name="str_mapIntroduction_worksite">工作站 标识</string>
+    <string name="str_mapIntroduction_charger">充电桩 标识</string>
+    <string name="str_mapIntroduction_charger_car">充电桩（标识前来充电小车的ID）</string>
+    <string name="str_mapIntroduction_car_uncharge">小车（无充电任务）</string>
+    <string name="str_mapIntroduction_car_charging">小车（有充电任务）</string>
+    <string name="str_mapIntroduction_pod">货架（pod）及A面（三个绿点所在面）朝向\n顺时针可以依次确定其他面</string>
+    <string name="str_mapIntroduction_unwalkedarea">不可走区域</string>
+    <string name="str_mapIntroduction_rotatearea">小车旋转点区域</string>
+    <string name="str_mapIntroduction_storage">存储区域</string>
+    <string name="str_mapIntroduction_carCurrentPath_lock">已经锁格区域</string>
+    <string name="str_mapIntroduction_carCurrentPath_unlock">小车当前路径显示区域（尚未锁格）</string>
+
+    <!--仓库地图初始化-->
+    <string name="str_init_storageName">仓库名称</string>
+    <string name="str_init_sectionMapName">地图名称</string>
+    <string name="str_please_select">请选择</string>
+
+    <!--小车电量信息-->
+    <string name="str_battery_fine">电量良好（50%~100%）</string>
+    <string name="str_battery_crisis">电量临界（30%~50%）</string>
+    <string name="str_battery_low">电量不足（10%~30%）</string>
+    <string name="str_battery_pause">电量暂停（0~10%）</string>
+    <string name="str_edittext_hint">输入小车id</string>
+    <string name="str_listview_car_id">小车 ID</string>
+    <string name="str_listview_car_battery_percent">电量百分比（状态）</string>
+    <string name="str_listview_car_battery_voltage">电池电压</string>
+
+    <!-- 接口地址-->
+    <!--<string name="url_root">http://192.168.2.11:12009/wcs/</string>&lt;!&ndash; 接口地址的协议、服务器地址和相同大路径部分&ndash;&gt;-->
+    <!--<string name="url_root">http://172.23.43.1:12009/wcs/</string>&lt;!&ndash; 苏宁环境 接口地址的协议、服务器地址和相同大路径部分&ndash;&gt;-->
+    <!--<string name="url_root">http://192.168.1.249:12008/wcs/</string>&lt;!&ndash; 西安环境 接口地址的协议、服务器地址和相同大路径部分&ndash;&gt;-->
+    <!--<string name="url_root">http://192.168.1.201:12009/wcs/</string>&lt;!&ndash; 苏州环境 接口地址的协议、服务器地址和相同大路径部分&ndash;&gt;-->
+    <string name="url_resendThePath">/wcs/resendOrder?</string><!-- 重发路径-->
+    <string name="url_carMoveOneGrid">/wcs/robotAct?</string><!-- 小车移动一格-->
+    <string name="url_checkCarState">/wcs/checkRobotStatus?</string><!-- 检查小车状态-->
+    <string name="url_showPod">/wcs/callNewPod?</string><!-- 显示当前过来的POD和面-->
+    <string name="url_releasePod">/wcs/podRelease?</string><!-- 工作站释放pod-->
+    <string name="url_updatePodPos">/wcs/updatePodStatus?</string><!-- 更新pod的实际位置-->
+    <string name="url_checkPodStatus">/wcs/checkPodStatus?</string><!-- 查看pod信息-->
+    <string name="url_checkAddrStatus">/wcs/checkAddrState?</string><!-- 查看地址状态-->
+    <string name="url_resendOrder">/wcs/resendOrder?</string><!-- 重发任务-->
+    <string name="url_robotOffline">/wcs/robotOffline?</string><!-- 下线某小车-->
+    <string name="url_drivePod">/wcs/drivePod?</string><!-- 驱动pod去某地-->
+    <string name="url_driveRobot">/wcs/driveRobot?</string><!-- 驱动小车去某地-->
+    <string name="url_releasePodStatus">/wcs/updatePodStatus?</string><!-- 释放pod状态-->
+    <string name="url_updateAddrState">/wcs/updateAddrState?</string><!-- 更新地址状态-->
+    <string name="url_robot2Charge">/wcs/robot2Charge?</string><!-- 下发充电任务-->
+    <string name="url_autoAssignAdnDrivePod">/wcs/autoAssignAdnDrivePod?</string><!-- 自动分配pod回存储区-->
+    <string name="url_driveRobotCarryPod">/wcs/driveRobotCarryPod?</string><!-- 驱动小车驮pod去某地-->
+
+    <string name="url_createEmptyRoute">http://192.168.1.203:12003/path-planning/empty-drive/path?</string><!-- 生成空车路径-->
+
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

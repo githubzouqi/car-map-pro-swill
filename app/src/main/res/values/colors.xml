@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#51BFE2</color>
+    <!--<color name="colorAccent">#FF4081</color>-->
+    <color name="colorAccent">#51BFE2</color>
+    <color name="lightBlue">#1571FA</color>
+    <color name="lighterBlue">#4EBCFF</color>
+    <color name="white">#ffffff</color>
+
+    <!--<color name="bg_blue">#3184FE</color>-->
+    <color name="bg_blue">#4EBCFF</color>
+
+    <color name="car">#f6b436</color><!--苏宁济南仓库小车颜色 -->
+    <!--<color name="car">#4EBCFF</color>&lt;!&ndash;西安展会小车颜色 &ndash;&gt;-->
+    <color name="pod">#E81010</color><!--货架颜色 -->
+    <color name="podAngleSite">#15B55C</color><!--货架朝向点的颜色 -->
+    <color name="unWalkedCell">#FFA829</color><!--不可走区域颜色 -->
+    <!--<color name="normal">#F1F1F1</color>&lt;!&ndash;正常 &ndash;&gt;-->
+    <color name="normal">#FFFFFF</color><!--正常 -->
+    <color name="rotate">#FFBDFF</color><!--旋转区颜色 -->
+    <color name="storage">#66888888</color><!--存储区颜色 -->
+    <!--<color name="carRoute">#778000</color>&lt;!&ndash;小车当前路径颜色 &ndash;&gt;-->
+    <color name="color_carLock">#92D050</color><!--小车当前路径锁格区域颜色 -->
+    <color name="color_carall">#008000</color><!--小车当前路径未锁格区域颜色 -->
+
+    <color name="color_battery_fine">#38EB42</color><!--电量良好 -->
+    <color name="color_battery_crisis">#FFB767</color><!--电量临界 -->
+    <color name="color_battery_low">#EE3B3E</color><!--电量不足 -->
+    <color name="color_battery_pause">#ff888888</color><!--电量暂停 -->
+
+
+</resources>

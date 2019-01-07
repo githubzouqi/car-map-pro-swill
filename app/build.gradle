@@ -1,0 +1,61 @@
+apply plugin: 'com.android.application'
+
+//def keyStorePropertiesFile = rootProject.file('keystore.properties')
+//
+//def keyStoreProperties = new Properties();
+
+//keyStoreProperties.load(new FileInputStream(keyStorePropertiesFile))
+
+android {
+//    signingConfigs {
+//        config {
+//            keyAlias keyStoreProperties['keyAlias']
+//            keyPassword keyStoreProperties['keyPassword']
+//            storeFile file(keyStoreProperties['storeFile'])
+//            storePassword keyStoreProperties['storePassword']
+//        }
+//    }
+    signingConfigs {
+        config {
+            keyAlias 'mushiny_yuanhui_release'
+            keyPassword 'mushiny'
+            storeFile file('D:/software/Android/jks/mushiny-yuanhui.jks')
+            storePassword 'mushiny'
+        }
+    }
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId 'com.mushiny.monitor.media'
+        minSdkVersion 17
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:support-v4:26.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.jakewharton:butterknife:8.1.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.1.0'
+    implementation 'com.mcxiaoke.volley:library:1.0.19'
+    implementation 'com.rabbitmq:amqp-client:4.4.1'
+    implementation 'in.srain.cube:ptr-load-more:1.0.6'
+    implementation 'me.zhanghai.android.materialprogressbar:library:1.4.2'
+}
