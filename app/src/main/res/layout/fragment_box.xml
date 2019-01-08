@@ -24,7 +24,7 @@
                 android:background="@android:color/white"
                 android:layout_height="match_parent">
 
-                <com.example.pc2.media.view.BoxView
+                <com.example.pc2.swill.view.BoxView
                 android:id="@+id/boxView"
                 android:visibility="gone"
                 android:background="@color/normal"

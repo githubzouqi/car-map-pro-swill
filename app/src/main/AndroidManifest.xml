@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.pc2.media">
+    package="com.example.pc2.swill">
 
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 网络访问权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 往SDCard写入数据权限 -->
@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:launchMode="singleTop"
-            android:name="com.example.pc2.media.activity.MainActivity"
+            android:name="com.example.pc2.swill.activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape">
             <intent-filter>
