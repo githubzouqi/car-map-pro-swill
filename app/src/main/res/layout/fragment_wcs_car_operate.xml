@@ -88,6 +88,18 @@
                 <Button
                     android:layout_marginTop="2dp"
                     android:gravity="center"
+                    android:id="@+id/btn_updateRobotStatus"
+                    android:textColor="@color/colorAccent"
+                    android:foreground="@drawable/water_ripple_foreground"
+                    android:background="@drawable/button_shape_white"
+                    android:text="@string/wcs_robot_update"
+                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:layout_marginTop="2dp"
+                    android:gravity="center"
                     android:id="@+id/btn_robotOffline"
                     android:textColor="@color/colorAccent"
                     android:foreground="@drawable/water_ripple_foreground"

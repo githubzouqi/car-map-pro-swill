@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -320,7 +321,7 @@ public class WcsCarOperateFragment extends BaseFragment{
     ,R.id.btn_releasePodStatus, R.id.btn_updateAddrState, R.id.btn_robot2Charge, R.id.btn_autoDrivePod
             , R.id.btn_driveRobotCarryPod, R.id.iv_fragment_back, R.id.btn_driveRobot
     ,R.id.btn_clearChargeError, R.id.btn_updatePodOnMap, R.id.btn_carUp, R.id.btn_carDown
-    , R.id.btn_carLeft, R.id.btn_carRight})
+    , R.id.btn_carLeft, R.id.btn_carRight, R.id.btn_updateRobotStatus})
     public void doClick(View view){
 
         switch (view.getId()){
@@ -1088,8 +1089,88 @@ public class WcsCarOperateFragment extends BaseFragment{
                 });
 
                 break;
+
+            case R.id.btn_updateRobotStatus:// 更新小车
+
+                setDialogView("更新小车");
+                final EditText et_car_id = viewOperate.findViewById(R.id.et_carIdInput);// 小车的id
+                et_car_id.setVisibility(View.VISIBLE);
+
+                viewOperate.findViewById(R.id.btn_send).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final String robotId = et_car_id.getText().toString().trim();
+                        if (!TextUtils.isEmpty(robotId)){
+
+                            new AlertDialog.Builder(getContext())
+                                    .setIcon(R.mipmap.app_icon)
+                                    .setTitle("提示")
+                                    .setMessage("确定更新小车 " + robotId + " 可用（Status 为 1、Available 为 true 以及 CancelOrder 为 true）？")
+                                    .setPositiveButton("否", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    })
+                                    .setNegativeButton("是", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            methodUpdateRobotStatus(robotId);
+                                        }
+                                    }).create().show();
+                        }else {
+                            ToastUtil.showToast(getContext(), "请输入小车的 id");
+                            return;
+                        }
+                    }
+                });
+
+                break;
         }
 
+    }
+
+    /**
+     * 更新小车（status为1、available为true、cancelOrder为true）
+     * @param robotId
+     */
+    private void methodUpdateRobotStatus(final String robotId) {
+
+        showDialog("更新小车...");
+
+        String status = "1";
+        boolean available = true;
+        boolean cancelOrder = true;
+
+        String url = rootAddress + getResources().getString(R.string.url_updateRobotStatus)
+                + "sectionId=" + sectionId + "&robotId=" + robotId + "&status=" + status
+                + "&available=" + available + "&cancelOrder=" + cancelOrder;
+
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        dissMissDialog();
+                        dialog_operate.dismiss();
+                        if (response.contains("小车不在同一个section")){
+                            ToastUtil.showToast(getContext(), "小车不在同一个地图，请输入正确的小车 ID");
+                            return;
+                        }
+
+                        ToastUtil.showToast(getContext(), "更新小车" + robotId + "成功");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        dissMissDialog();
+                        dialog_operate.dismiss();
+                        ToastUtil.showToast(getContext(), "更新小车over");
+                    }
+                });
+
+        requestQueue.add(request);
     }
 
     /**

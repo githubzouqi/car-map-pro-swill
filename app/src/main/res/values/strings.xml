@@ -64,6 +64,7 @@
     <string name="wcs_autoAssignAdnDrivePod">自动分配POD回存储区</string>
     <string name="wcs_driveRobotCarryPod">驱动小车驮pod去某地</string>
     <string name="wcs_driveRobot">驱动小车去某地</string>
+    <string name="wcs_robot_update">更新小车</string>
 
     <!--地图说明-->
     <string name="str_mapIntroduction_worksite">工作站 标识</string>
@@ -115,6 +116,7 @@
     <string name="url_robot2Charge">/wcs/robot2Charge?</string><!-- 下发充电任务-->
     <string name="url_autoAssignAdnDrivePod">/wcs/autoAssignAdnDrivePod?</string><!-- 自动分配pod回存储区-->
     <string name="url_driveRobotCarryPod">/wcs/driveRobotCarryPod?</string><!-- 驱动小车驮pod去某地-->
+    <string name="url_updateRobotStatus">/wcs/updateRobotStatus?</string><!-- 更新小车-->
 
     <string name="url_createEmptyRoute">http://192.168.1.203:12003/path-planning/empty-drive/path?</string><!-- 生成空车路径-->
 
