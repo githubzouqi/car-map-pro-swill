@@ -19,7 +19,7 @@ android {
         config {
             keyAlias 'mushiny_yuanhui_release'
             keyPassword 'mushiny'
-            storeFile file('D:/software/Android/jks/mushiny-yuanhui.jks')
+            storeFile file('/Users/zouqi/Downloads/mushiny-yuanhui.jks')
             storePassword 'mushiny'
         }
     }

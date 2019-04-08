@@ -24,15 +24,19 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.pc2.swill.R;
 import com.example.pc2.swill.constant.Constants;
 import com.example.pc2.swill.utils.LogUtil;
+import com.example.pc2.swill.utils.ProgressBarUtil;
 import com.example.pc2.swill.utils.ToastUtil;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -53,7 +57,7 @@ import butterknife.OnClick;
  * wcs调用接口来实现小车的控制。
  * 现在包含大部分查询的接口，陆续会实现所有涉及的接口
  *
- * 源汇版本、费舍尔版本 更名为：其他
+ * 史必诺 更名为：其他
  * 添加了rcs的清除充电桩故障功能并去掉了部分wcs的接口项
  *
  */
@@ -321,7 +325,8 @@ public class WcsCarOperateFragment extends BaseFragment{
     ,R.id.btn_releasePodStatus, R.id.btn_updateAddrState, R.id.btn_robot2Charge, R.id.btn_autoDrivePod
             , R.id.btn_driveRobotCarryPod, R.id.iv_fragment_back, R.id.btn_driveRobot
     ,R.id.btn_clearChargeError, R.id.btn_updatePodOnMap, R.id.btn_carUp, R.id.btn_carDown
-    , R.id.btn_carLeft, R.id.btn_carRight, R.id.btn_updateRobotStatus})
+    , R.id.btn_carLeft, R.id.btn_carRight, R.id.btn_updateRobotStatus, R.id.btn_speedlogFinishTripByRobot
+    , R.id.btn_speedlogFinishTripByPod})
     public void doClick(View view){
 
         switch (view.getId()){
@@ -1127,7 +1132,172 @@ public class WcsCarOperateFragment extends BaseFragment{
                 });
 
                 break;
+
+            case R.id.btn_speedlogFinishTripByRobot:// speedlog特有接口
+
+                setDialogView("输入AGV号码结束任务");
+                final EditText et_speedlogFinishTripByRobotId = viewOperate.findViewById(R.id.et_carIdInput);// 小车的id
+                et_speedlogFinishTripByRobotId.setVisibility(View.VISIBLE);
+
+                viewOperate.findViewById(R.id.btn_send).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final String robotId = et_speedlogFinishTripByRobotId.getText().toString().trim();
+                        if (!TextUtils.isEmpty(robotId)){
+
+                            new AlertDialog.Builder(getContext())
+                                    .setIcon(R.mipmap.app_icon)
+                                    .setTitle("温馨提示")
+                                    .setMessage("确定结束任务？")
+                                    .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            method2FinishTripByRobotId(robotId);
+                                        }
+                                    })
+                                    .setNegativeButton("好的", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    }).create().show();
+
+                        }else {
+                            ToastUtil.showToast(getContext(), "请输入AGV号码");
+                            return;
+                        }
+                    }
+                });
+
+                break;
+
+            case R.id.btn_speedlogFinishTripByPod:// speedlog特有接口
+
+                setDialogView("输入POD号码结束任务");
+                final EditText et_speedlogFinishTripByPod = viewOperate.findViewById(R.id.et_podIdInput);// 货架id
+                et_speedlogFinishTripByPod.setVisibility(View.VISIBLE);
+
+                viewOperate.findViewById(R.id.btn_send).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final String podId = et_speedlogFinishTripByPod.getText().toString().trim();
+                        if (!TextUtils.isEmpty(podId)){
+
+                            new AlertDialog.Builder(getContext())
+                                    .setIcon(R.mipmap.app_icon)
+                                    .setTitle("温馨提示")
+                                    .setMessage("确定结束任务？")
+                                    .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            method2FinishTripByPodId(podId);
+                                        }
+                                    })
+                                    .setNegativeButton("好的", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    }).create().show();
+
+                        }else {
+                            ToastUtil.showToast(getContext(), "请输入POD号码");
+                            return;
+                        }
+                    }
+                });
+
+                break;
+
+
         }
+
+    }
+
+    /**
+     * speedlog中通过输入POD号码来结束任务
+     * @param podId
+     */
+    private void method2FinishTripByPodId(String podId) {
+
+        ProgressBarUtil.showProgressBar(getContext(), "结束任务......");
+        String url = rootAddress + getResources().getString(R.string.url_speedlog_finishTripByRobot)
+                + "sectionId=" + sectionId + "&podId=" + podId;
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        ProgressBarUtil.dissmissProgressBar();
+                        try{
+
+                            String result = response.optString("result");
+
+                            if ("success".equals(result)){
+                                ToastUtil.showToast(getContext(), "结束任务成功");
+                            }else if("failure".equals(result)){
+                                ToastUtil.showToast(getContext(), "结束任务失败：" + response.optString("msg"));
+                            }
+                        }catch (Exception e){
+                            ToastUtil.showToast(getContext(), "解析异常：" + e.getMessage());
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        ProgressBarUtil.dissmissProgressBar();
+                        ToastUtil.showToast(getContext(), "结束任务异常：" + error.getMessage());
+                        return;
+                    }
+                });
+
+        requestQueue.add(request);
+    }
+
+    /**
+     * speedlog中通过输入AGV号码来结束任务
+     * @param robotId
+     */
+    private void method2FinishTripByRobotId(String robotId) {
+
+        ProgressBarUtil.showProgressBar(getContext(), "结束任务......");
+        String url = rootAddress + getResources().getString(R.string.url_speedlog_finishTripByRobot)
+                + "sectionId=" + sectionId + "&robotId=" + robotId;
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        ProgressBarUtil.dissmissProgressBar();
+                        try{
+
+                            String result = response.optString("result");
+
+                            if ("success".equals(result)){
+                                ToastUtil.showToast(getContext(), "结束任务成功");
+                            }else if("failure".equals(result)){
+                                ToastUtil.showToast(getContext(), "结束任务失败：" + response.optString("msg"));
+                            }
+                        }catch (Exception e){
+                            ToastUtil.showToast(getContext(), "解析异常：" + e.getMessage());
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        ProgressBarUtil.dissmissProgressBar();
+                        ToastUtil.showToast(getContext(), "结束任务异常：" + error.getMessage());
+                        return;
+                    }
+                });
+
+        requestQueue.add(request);
 
     }
 

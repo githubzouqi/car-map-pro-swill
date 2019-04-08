@@ -6,6 +6,23 @@
     android:layout_height="wrap_content">
 
     <TextView
+        android:id="@+id/tv_reboot_resend"
+        android:clickable="true"
+        android:foreground="@drawable/water_ripple_foreground"
+        android:text="重启重发"
+        android:textColor="@color/colorAccent"
+        android:padding="10dp"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:background="@color/colorAccent"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <TextView
         android:id="@+id/tv_options_lock_circle"
         android:clickable="true"
         android:foreground="@drawable/water_ripple_foreground"

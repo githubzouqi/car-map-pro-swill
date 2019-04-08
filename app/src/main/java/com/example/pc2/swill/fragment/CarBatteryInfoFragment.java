@@ -565,7 +565,6 @@ public class CarBatteryInfoFragment extends BaseFragment {
         factory.setPort(Constants.MQ_PORT);// 端口号
         factory.setUsername(Constants.MQ_USERNAME);// 用户名
         factory.setPassword(Constants.MQ_PASSWORD);// 密码
-        factory.setAutomaticRecoveryEnabled(false);
     }
 
     /**
@@ -589,11 +588,13 @@ public class CarBatteryInfoFragment extends BaseFragment {
                     // 处理完一个消息，再接收下一个消息
                     channel.basicQos(0, 1, false);
 
+//                    channel.basicQos(0, 0, false);
+
                     // 随机命名一个队列名称
                     String queueName = System.currentTimeMillis() + "QN_CAR_BATTERY";
-//                    String queueName = "1522474994468queueNameCarBatteryInfo";
+//                    String queueName = "WCS_ANY_ROBOT_STATUS";
                     // 声明交换机类型
-                    channel.exchangeDeclare(Constants.MQ_EXCHANGE_CAR_BATTERY, "direct", true);
+                    channel.exchangeDeclare(Constants.MQ_EXCHANGE_CAR_BATTERY, "fanout", true);
                     // 声明队列（持久的、非独占的、连接断开后队列会自动删除）
                     AMQP.Queue.DeclareOk q = channel.queueDeclare(queueName, true, false, true, null);// 声明共享队列
                     // 根据路由键将队列绑定到交换机上（需要知道交换机名称和路由键名称）
@@ -607,10 +608,7 @@ public class CarBatteryInfoFragment extends BaseFragment {
 
                             // 发消息通知UI更新
                             Message message = handler.obtainMessage();
-//                            Bundle bundle = new Bundle();
-//                            bundle.putByteArray("body", body);
                             message.what = WHAT_CAR_BATTERY_INFO;
-//                            message.obj = bundle;
                             message.obj = body;
                             handler.sendMessage(message);
                         }

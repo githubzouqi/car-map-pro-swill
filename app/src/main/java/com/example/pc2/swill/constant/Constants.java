@@ -39,7 +39,7 @@ public class Constants {
 //    public static String MQ_HOST = "52.83.227.228";// MQ主机地址 源汇版
 //    public static String MQ_HOST = "192.168.0.72";// 主机地址：费舍尔版
 //    public static String MQ_HOST = "192.168.10.212";// 主机地址：美的版
-    public static String MQ_HOST = "192.168.1.202";// 主机地址：SWill
+    public static String MQ_HOST = "123.249.28.97";// 主机地址：SWill
     public static int MQ_PORT = 5672;// MQ端口号：源汇版、费舍尔版、美的版、SWill
 //    public static String MQ_USERNAME = "nt_yuan_hui";// MQ用户名 源汇版
     public static String MQ_USERNAME = "mushiny";// 用户名：费舍尔版、美的版、SWill
@@ -59,6 +59,7 @@ public class Constants {
     public static final String MQ_EXCHANGE_STORAGEMAP = "ANY_WAREHOUSE_INIT";// 交换机名称
     public static final String MQ_ROUTINGKEY_STORAGEMAP_REQUEST = "ANY_WCS_WAREHOUSE_INIT_REQUEST";// 发布消息所绑定的路由键
     public static final String MQ_ROUTINGKEY_STORAGEMAP_RESPONSE = "WCS_ANY_WAREHOUSE_INIT_RESPONSE";// 获取消息所绑定的路由键
+    public static final String MQ_QUEUENAME_STORAGEMAP_RESPONSE = "WCS_ANY_WAREHOUSE_INIT_RESPONSE";// MQ固定队列名
 
     public static final String MQ_ROUTINGKEY_CARPATH = "RCS_WCS_RESPONSE_ALL_AGV_INFO";// 获取小车锁格和尚未锁格的路径消息的路由键
 

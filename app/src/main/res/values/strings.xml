@@ -120,6 +120,9 @@
 
     <string name="url_createEmptyRoute">http://192.168.1.203:12003/path-planning/empty-drive/path?</string><!-- 生成空车路径-->
 
+    <!--史必诺特有接口-->
+    <string name="url_speedlog_finishTripByRobot">/wcs/finishTripByRobot?</string><!-- 根据小车id来结束调度任务-->
+    <string name="url_speedlog_finishTripByPod">/wcs/finishTripByPod?</string><!-- 根据pod号码来结束调度任务-->
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

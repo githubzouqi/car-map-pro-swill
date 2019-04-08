@@ -121,6 +121,7 @@ public class BoxFragment extends BaseFragment {
     private static final int WHAT_CAR_DATA = 0x17;// 开始小车监控
     private static final int WHAT_AUTO_DRAW_MAP = 0x22;// 延迟消息绘制地图
     private static final int WHAT_RELEASE_POD = 0X23;// 延迟消息不间断释放pod
+    private static final int WHAT_REBOOT_RESEND = 0X25;// 重启小车，重发任务
     private static final long RELEASE_POD_TIME = 5000;// 延迟消息不间断释放pod延迟时间
 
     private ConnectionFactory factory = new ConnectionFactory();// 声明ConnectionFactory对象
@@ -261,9 +262,12 @@ public class BoxFragment extends BaseFragment {
     private boolean bl_isDriveEmpty = false;// 默认空车路径未生成
 
     private View view_options = null;// 点击主页面地图上的格子，弹出的对话框的view
-    private TextView tv_options_lock_circle, tv_options_unlock_circle;
+    private TextView tv_options_lock_circle, tv_options_unlock_circle, tv_reboot_resend;
     private AlertDialog dialog_options = null;// 点击主页面地图上的格子，弹出的对话框
     private List<Integer> nine_lock_unlock = new ArrayList<>();// 九宫格的地址点位集合
+
+    private int reboot_robotId = -1;// 是否从mq上获取小车的锁格路径信息标识。不为-1就获取小车的锁格路径信息
+    private List<Integer> reboot_lock_list = new ArrayList<>();// 保存小车重启后原来锁格的路径信息
 
     private boolean STOP_RELEASE_POD = true;// 中断 不间断释放pod功能的开关，true表示中断
     private String strWorkSiteUUID = "";// 点击地图上对应工作站的时候，保存该工作站的UUID，释放pod需要使用该参数
@@ -568,6 +572,12 @@ public class BoxFragment extends BaseFragment {
                     releasePodForever();// 不间断释放pod
 
                     break;
+                case WHAT_REBOOT_RESEND:// 重启重发，延迟1s执行
+
+                    int robotId = msg.arg1;
+                    methodRebootResend(robotId);
+
+                    break;
             }
         }
     };
@@ -846,6 +856,32 @@ public class BoxFragment extends BaseFragment {
 
                     List<Long> longs_lock = (List<Long>) map.get("currentSeriesPath");// 锁格区域
                     List<Long> longs_all = (List<Long>) map.get("currentGlobalSeriesPath");// 锁格和未锁格区域
+
+                    // 将锁格路径集合元素的类型转为int
+                    if (reboot_robotId != -1 && reboot_robotId == robotID){
+
+                        reboot_lock_list.clear();
+                        for (int j = 0;j < longs_lock.size();j++){
+                            int lock_pos = Integer.parseInt(String.valueOf(longs_lock.get(j)));
+                            reboot_lock_list.add(lock_pos);
+                        }
+
+                        int index = -1;
+                        int currentAddressCodeID = Integer.parseInt(String.valueOf(map.get("currentAddressCodeID")));
+                        for (int k = 0;k < reboot_lock_list.size();k++){
+                            int address = reboot_lock_list.get(k);
+                            if (address == currentAddressCodeID){
+                                index = k;
+                            }
+                        }
+
+                        if (index != -1){
+                            reboot_lock_list.remove(index);
+                        }
+
+                        reboot_robotId = -1;
+                    }
+
                     // 实体对象设值
                     CarCurrentPathEntity entity = new CarCurrentPathEntity();
                     entity.setRobotID(robotID);
@@ -1203,7 +1239,7 @@ public class BoxFragment extends BaseFragment {
         boxView.setOnClickListener(new BoxView.OnClickListener() {
             @Override
             public void doClick(final int boxNo,
-                                List<RobotEntity> car_List,
+                                final List<RobotEntity> car_List,
                                 List<PodEntity> pod_List,
                                 List<Long> unWalked_List) {
 
@@ -1265,11 +1301,60 @@ public class BoxFragment extends BaseFragment {
                         // 获取控件
                         tv_options_lock_circle = view_options.findViewById(R.id.tv_options_lock_circle);// 锁周边
                         tv_options_unlock_circle = view_options.findViewById(R.id.tv_options_unlock_circle);// 解锁周边
+                        tv_reboot_resend = view_options.findViewById(R.id.tv_reboot_resend);// 重启重发
 
                         // 设置dialog所在的窗口的背景为透明，很关键
                         dialog_options.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         dialog_options.setCancelable(true);
                         dialog_options.show();
+
+                        // 小车重启，重算路径后重发任务
+                        tv_reboot_resend.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                if(!bl_isCarExist){
+                                    ToastUtil.showToast(getContext(),"请点击地图上的小车");
+                                    dialog_options.dismiss();
+                                    return;
+                                }
+
+                                final int robotID = Integer.parseInt(String.valueOf(car_List.get(carPosition).getRobotID()));// 获取小车id
+
+                                // 每次重启重发时都需要清空小车的原锁格路径集合
+                                if(reboot_lock_list.size() != 0){
+                                    reboot_lock_list.clear();
+                                }
+                                reboot_robotId = robotID;
+                                setUpConnectionFactory();
+
+                                new AlertDialog.Builder(getContext())
+                                        .setTitle("温馨提示")
+                                        .setIcon(R.mipmap.app_icon)
+                                        .setMessage("重启重发小车 " + robotID + " ？")
+                                        .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                reboot_robotId = -1;
+                                                dialog.dismiss();
+                                            }
+                                        })
+                                        .setNegativeButton("好的", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                dialog_options.dismiss();
+
+                                                Message message = inComingMessageHandler.obtainMessage();
+                                                message.arg1 = robotID;
+                                                message.what = WHAT_REBOOT_RESEND;
+                                                inComingMessageHandler.sendMessageDelayed(message, 1000);
+
+                                            }
+                                        }).create().show();
+
+                            }
+                        });
 
                         // 锁周边，即建立安全区域
                         tv_options_lock_circle.setOnClickListener(new View.OnClickListener() {
@@ -1507,6 +1592,82 @@ public class BoxFragment extends BaseFragment {
                 boxSizeChange = boxSizeInOut;
             }
         });
+
+    }
+
+    /**
+     * 小车重启重发任务
+     * @param robotID   小车id
+     */
+    private void methodRebootResend(int robotID) {
+
+        if (reboot_lock_list.size() != 0){
+            try{
+
+                // 给RabbitMQ发送消息
+                publishToAMPQ(Constants.EXCHANGE, Constants.MQ_ROUTINGKEY_LOCK_UNLOCK);
+
+                Map<String, Object> message = new HashMap<>();
+                message.put("availableAddressList", reboot_lock_list);
+                queue.putLast(message);// 发送消息到MQ
+
+                methodResendOrder(robotID);
+
+            }catch (Exception e){
+                e.printStackTrace();
+                ToastUtil.showToast(getContext(), "小车重启后解锁锁格异常：" + e.getMessage());
+            }
+        }else {
+            ToastUtil.showToast(getContext(), "原锁格路径信息为空");
+        }
+
+    }
+
+    /**
+     * 小车重发任务
+     * @param robotId   小车id
+     */
+    private void methodResendOrder(final int robotId) {
+
+        ProgressBarUtil.showProgressBar(getContext(), "重发任务......", getResources().getColor(R.color.colorAccent));
+
+        String url = rootAddress + getResources().getString(R.string.url_resendOrder)
+                + "sectionId=" + sectionId + "&robotId=" + robotId;
+
+//        String url = rootAddress + getResources().getString(R.string.url_resendOrder)
+//                + "robotId=" + robotId;
+
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        ProgressBarUtil.dissmissProgressBar();
+
+                        if (!TextUtils.isEmpty(response.toString())){
+
+                            String strRes = response.toString();
+                            if (strRes.contains("未注册")){
+                                ToastUtil.showToast(getContext(), response.toString());
+                                return;
+                            }else {
+                                ToastUtil.showToast(getContext(), "已重发任务");
+                            }
+
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        ProgressBarUtil.dissmissProgressBar();
+                        ToastUtil.showToast(getContext(), "已重发任务");
+                    }
+                });
+
+        requestQueue.add(request);
+
 
     }
 
@@ -3108,9 +3269,13 @@ public class BoxFragment extends BaseFragment {
 
                     // 创建随机队列，可持续，自动删除
                     String queueName = System.currentTimeMillis() + "QN_SHOW_CAR_PATH";
+//                    String queueName = "RCS_WCS_RESPONSE_ALL_AGV_INFO";
+
                     channel.exchangeDeclare(Constants.EXCHANGE, "direct", true);
                     AMQP.Queue.DeclareOk q = channel.queueDeclare(queueName, true, false, true, null);// 声明共享队列
                     channel.queueBind(q.getQueue(), Constants.EXCHANGE, Constants.MQ_ROUTINGKEY_CARPATH);
+
+//                    channel.queueBind(queueName, Constants.EXCHANGE, Constants.MQ_ROUTINGKEY_CARPATH);
 
                     Consumer consumer = new DefaultConsumer(channel){
                         @Override
@@ -3125,6 +3290,7 @@ public class BoxFragment extends BaseFragment {
                         }
                     };
                     channel.basicConsume(q.getQueue(), true, consumer);
+//                    channel.basicConsume(queueName, true, consumer);
 
                 } catch (Exception e){
                     e.printStackTrace();
@@ -3338,10 +3504,16 @@ public class BoxFragment extends BaseFragment {
                     connection_storageMap = factory.newConnection();
                     Channel channel = connection_storageMap.createChannel();
                     channel.basicQos(1);
-                    String queueName = System.currentTimeMillis() + "queueNameStorageMap";
+
+//                    String queueName = System.currentTimeMillis() + "QN_StorageMap";
+                    String queueName = Constants.MQ_QUEUENAME_STORAGEMAP_RESPONSE;
+
                     channel.exchangeDeclare(Constants.MQ_EXCHANGE_STORAGEMAP, "direct", true);
-                    AMQP.Queue.DeclareOk q = channel.queueDeclare(queueName, true, false, true, null);
-                    channel.queueBind(q.getQueue(), Constants.MQ_EXCHANGE_STORAGEMAP, Constants.MQ_ROUTINGKEY_STORAGEMAP_RESPONSE);
+//                    AMQP.Queue.DeclareOk q = channel.queueDeclare(queueName, true, false, true, null);
+//                    channel.queueBind(q.getQueue(), Constants.MQ_EXCHANGE_STORAGEMAP, Constants.MQ_ROUTINGKEY_STORAGEMAP_RESPONSE);
+
+                    channel.queueBind(queueName, Constants.MQ_EXCHANGE_STORAGEMAP, Constants.MQ_ROUTINGKEY_STORAGEMAP_RESPONSE);
+
                     Consumer consumer = new DefaultConsumer(channel){
                         @Override
                         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
@@ -3365,7 +3537,8 @@ public class BoxFragment extends BaseFragment {
 
                         }
                     };
-                    channel.basicConsume(q.getQueue(), true, consumer);
+//                    channel.basicConsume(q.getQueue(), true, consumer);
+                    channel.basicConsume(queueName, true, consumer);
                 }catch (Exception e){
                     ProgressBarUtil.dissmissProgressBar();
                     e.printStackTrace();
