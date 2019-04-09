@@ -374,6 +374,37 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/linear_map_charging_pile_state"
+                        android:visibility="gone"
+                        android:background="@drawable/map_introduction_selector"
+                        android:layout_marginRight="6dp"
+                        android:layout_marginTop="6dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_below="@+id/linear_map_carBatteryInfo"
+                        android:layout_alignParentRight="true"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_margin="2dp"
+                            android:id="@+id/iv_charger_state"
+                            android:src="@mipmap/charger_state"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp" />
+                        <TextView
+                            android:textSize="6sp"
+                            android:text="充电桩状态"
+                            android:textColor="@android:color/black"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:layout_width="30dp"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/linear_map_rcs"
                         android:visibility="gone"
                         android:background="@drawable/map_introduction_selector"

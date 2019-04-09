@@ -39,7 +39,8 @@ public class Constants {
 //    public static String MQ_HOST = "52.83.227.228";// MQ主机地址 源汇版
 //    public static String MQ_HOST = "192.168.0.72";// 主机地址：费舍尔版
 //    public static String MQ_HOST = "192.168.10.212";// 主机地址：美的版
-    public static String MQ_HOST = "123.249.28.97";// 主机地址：SWill
+//    public static String MQ_HOST = "123.249.28.97";// 外网主机地址：SWill
+    public static String MQ_HOST = "192.168.1.202";// 内网主机地址：SWill
     public static int MQ_PORT = 5672;// MQ端口号：源汇版、费舍尔版、美的版、SWill
 //    public static String MQ_USERNAME = "nt_yuan_hui";// MQ用户名 源汇版
     public static String MQ_USERNAME = "mushiny";// 用户名：费舍尔版、美的版、SWill
@@ -99,4 +100,7 @@ public class Constants {
 
     // 改变货架的位置（将位于通道的货架更新到地图上，防止重车撞货架）
     public static final String MQ_ROUTINGKEY_CHANGING_POD_POSITION = "WCS_RCS_CHANGING_POD_POSITION";
+
+    // 所有充电桩的状态
+    public static final String MQ_ROUTINGKEY_CHARGING_PILE_WCS_CHARGERS_INFO_RESPONSE = "CHARGING_PILE_WCS_CHARGERS_INFO_RESPONSE";
 }

@@ -4,6 +4,7 @@ package com.example.pc2.swill.fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,6 +42,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.pc2.swill.R;
 import com.example.pc2.swill.constant.Constants;
 import com.example.pc2.swill.entity.CarCurrentPathEntity;
+import com.example.pc2.swill.entity.ChargerStatusEntity;
 import com.example.pc2.swill.entity.ChargingPileEntity;
 import com.example.pc2.swill.entity.ChargingTaskEntity;
 import com.example.pc2.swill.entity.ErrorCharging;
@@ -122,6 +124,7 @@ public class BoxFragment extends BaseFragment {
     private static final int WHAT_AUTO_DRAW_MAP = 0x22;// 延迟消息绘制地图
     private static final int WHAT_RELEASE_POD = 0X23;// 延迟消息不间断释放pod
     private static final int WHAT_REBOOT_RESEND = 0X25;// 重启小车，重发任务
+    private static final int WHAT_CHECK_ALL_CHARGER_STATUS = 0x27;// 所有充电桩的状态
     private static final long RELEASE_POD_TIME = 5000;// 延迟消息不间断释放pod延迟时间
 
     private ConnectionFactory factory = new ConnectionFactory();// 声明ConnectionFactory对象
@@ -138,6 +141,7 @@ public class BoxFragment extends BaseFragment {
     @BindView(R.id.linear_map_carLockUnLock) LinearLayout linear_map_carLockUnLock;// 锁格、解锁
     @BindView(R.id.linear_map_carBatteryInfo) LinearLayout linear_map_carBatteryInfo;// 小车电量信息
     @BindView(R.id.linear_map_wcs) LinearLayout linear_map_wcs;// WCS部分（源汇版本 更名为：其他）
+    @BindView(R.id.linear_map_charging_pile_state) LinearLayout linear_map_charging_pile_state;// 查看充电桩状态
     @BindView(R.id.linear_map_rcs) LinearLayout linear_map_rcs;// RCS部分
     @BindView(R.id.linear_operate) LinearLayout linear_operate;// 地图绘制操作的线性布局
     @BindView(R.id.rl_mapView)RelativeLayout rl_mapView;
@@ -215,6 +219,7 @@ public class BoxFragment extends BaseFragment {
     private Thread threadNoMoveTimeout = null;// 小车位置不改变超时线程
     private Thread threadErrorCloseConnection = null;// 小车断开连接线程
     private Thread threadChargingError = null;// 小车充电故障线程
+    private Thread threadCheckChargerStatus = null;// 所有充电桩状态消费线程
 
     private Connection connection_map;// 初始化地图数据的连接
     private Connection connection_car;// 初始化小车数据的连接
@@ -225,6 +230,7 @@ public class BoxFragment extends BaseFragment {
     private Connection connection_noMoveTimeout;// 小车位置不改变超时
     private Connection connection_errorCloseConnection;// 小车断开连接
     private Connection connection_chargingError;// 小车充电故障
+    private Connection connection_checkChargerStatus;// 所有充电桩的状态
 
     private int boxSizeChange;// 放大或者缩小地图时需要的参数
 
@@ -271,6 +277,13 @@ public class BoxFragment extends BaseFragment {
 
     private boolean STOP_RELEASE_POD = true;// 中断 不间断释放pod功能的开关，true表示中断
     private String strWorkSiteUUID = "";// 点击地图上对应工作站的时候，保存该工作站的UUID，释放pod需要使用该参数
+
+    private List<ChargerStatusEntity> chargerStatusEntities = new ArrayList<>();// 所有充电桩状态集合
+    private View view_all_charger_status = null;
+    private Dialog dialog_all_charger_status = null;
+    private String str_all_charger_status = "";
+    private boolean bl_all_charger_status = false;// false表示不弹出dialog显示充电桩状态
+    private SimpleDateFormat format = null;
 
     // 处理handler发送的消息，然后进行操作（在主线程）
     @SuppressLint("HandlerLeak")
@@ -323,6 +336,7 @@ public class BoxFragment extends BaseFragment {
                         linear_map_drawAgain.setVisibility(View.VISIBLE);
 //                        linear_map_carLockUnLock.setVisibility(View.VISIBLE);
                         visibile(linear_map_carBatteryInfo);
+                        visibile(linear_map_charging_pile_state);
                         // 源汇定制
                         visibile(linear_map_wcs);
 //                        visibile(linear_map_rcs);
@@ -458,6 +472,7 @@ public class BoxFragment extends BaseFragment {
                     interruptThread(threadNoMoveTimeout);
                     interruptThread(threadErrorCloseConnection);
                     interruptThread(threadChargingError);
+                    interruptThread(threadCheckChargerStatus);
                     interruptThread(threadShowAllCarCurrentPath);
                     clearData();
                     publishToAMPQ(Constants.MQ_EXCHANGE_STORAGEMAP, Constants.MQ_ROUTINGKEY_STORAGEMAP_REQUEST);// publish消息给请求队列
@@ -578,9 +593,115 @@ public class BoxFragment extends BaseFragment {
                     methodRebootResend(robotId);
 
                     break;
+                case WHAT_CHECK_ALL_CHARGER_STATUS:// 显示所有充电桩的状态
+                    ProgressBarUtil.dissmissProgressBar();
+                    byte[] bodyChargerStatus = (byte[]) msg.obj;
+                    Map<String, Object> mapChargerStatus = (Map<String, Object>) toObject(bodyChargerStatus);
+                    // 生成文件
+//                    try {
+//                        FileUtil.createFileWithByte(mapChargerStatus.toString().getBytes("utf-8"),"swing查看充电桩状态.doc");
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+                    if (mapChargerStatus != null && mapChargerStatus.size() != 0){
+                        setChargerStatusData(mapChargerStatus);
+                    }
+
+                    if (chargerStatusEntities.size() != 0){
+                        dialogShowChargerStatus();
+                    }
+                    break;
             }
         }
     };
+
+    /**
+     * 创建dialog展示所有充电桩状态
+     */
+    private void dialogShowChargerStatus() {
+
+        if (view_all_charger_status == null){
+            view_all_charger_status = getLayoutInflater().from(getContext()).inflate(R.layout.dialog_view_all_charger_status, null);
+        }
+
+        if (format == null){
+            format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+
+        String date = format.format(new Date(System.currentTimeMillis()));
+
+        ((TextView)view_all_charger_status.findViewById(R.id.tv_charger_status_content)).setText(str_all_charger_status);
+        ((TextView)view_all_charger_status.findViewById(R.id.tv_fresh_data_time)).setText("（数据实时刷新中）" + date);
+
+        if (dialog_all_charger_status == null){
+            dialog_all_charger_status = new AlertDialog.Builder(getContext())
+                    .setCancelable(true)
+                    .setView(view_all_charger_status)
+                    .create();
+
+            dialog_all_charger_status.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    bl_all_charger_status = false;// 不显示
+                    // 中断线程并置为null
+                    if (threadCheckChargerStatus != null){
+                        threadCheckChargerStatus.interrupt();
+                        threadCheckChargerStatus = null;
+                    }
+                    dialog_all_charger_status = null;
+                }
+            });
+        }
+
+        if (bl_all_charger_status){
+            dialog_all_charger_status.show();
+        }
+    }
+
+    /**
+     * 实体类集合设置数据
+     * @param mapChargerStatus 所有的充电桩状态数据
+     */
+    private void setChargerStatusData(Map<String, Object> mapChargerStatus) {
+        try{
+
+            // 一定记得清空数据
+            str_all_charger_status = "";
+            chargerStatusEntities.clear();
+
+            List<Map<String, Object>> chargerStatusList = (List<Map<String, Object>>) mapChargerStatus.get("chargers");
+            for (int i = 0;i < chargerStatusList.size();i++){
+                ChargerStatusEntity entity = new ChargerStatusEntity();
+
+                String errorName = String.valueOf(chargerStatusList.get(i).get("errorName"));
+                int errorIndex = Integer.parseInt(String.valueOf(chargerStatusList.get(i).get("errorIndex")));
+                int id = Integer.parseInt(String.valueOf(chargerStatusList.get(i).get("id")));
+                int type = Integer.parseInt(String.valueOf(chargerStatusList.get(i).get("type")));
+                String statusName = String.valueOf(chargerStatusList.get(i).get("statusName"));
+                int statusIndex = Integer.parseInt(String.valueOf(chargerStatusList.get(i).get("statusIndex")));
+
+                entity.setErrorName(errorName);
+                entity.setErrorIndex(errorIndex);
+                entity.setId(id);
+                entity.setType(type);
+                entity.setStatusName(statusName);
+                entity.setStatusIndex(statusIndex);
+
+                chargerStatusEntities.add(entity);
+            }
+
+            for (int j = 0;j < chargerStatusEntities.size();j++){
+                str_all_charger_status += "类型为 " + chargerStatusEntities.get(j).getType()
+                        + " 的 " + chargerStatusEntities.get(j).getId() + " 号充电桩："
+                        + chargerStatusEntities.get(j).getStatusName() + "（"
+                        + chargerStatusEntities.get(j).getErrorName() + "）" + "\n";
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            ToastUtil.showToast(getContext(), "充电桩状态数据解析异常：" + e.getMessage());
+        }
+    }
 
     /**
      * 不间断释放pod
@@ -2458,7 +2579,8 @@ public class BoxFragment extends BaseFragment {
             , R.id.linear_map_introduction, R.id.linear_map_info, R.id.linear_map_reset, R.id.linear_map_drawAgain
             , R.id.tv_showAllCarCurrentPath, R.id.tv_cancelAllCarCurrentPath, R.id.linear_map_carLockUnLock
             , R.id.btn_cancel_lockunlock, R.id.btn_confirm_lockunlock, R.id.linear_map_carBatteryInfo
-            , R.id.linear_map_wcs, R.id.linear_map_rcs, R.id.imgBtn_errorTip, R.id.tv_problem_solve_or_not})
+            , R.id.linear_map_wcs, R.id.linear_map_rcs, R.id.imgBtn_errorTip, R.id.tv_problem_solve_or_not
+            , R.id.linear_map_charging_pile_state})
     public void doClick(final View view){
         switch (view.getId()){
             case R.id.btn_initStorageMap:// 初始化仓库和地图数据
@@ -2608,6 +2730,7 @@ public class BoxFragment extends BaseFragment {
                                     gone(linear_lock_unlock);
                                     visibile(linear_map_carLockUnLock);
                                     visibile(linear_map_carBatteryInfo);
+                                    visibile(linear_map_charging_pile_state);
                                     // 源汇定制
                                     visibile(linear_map_wcs);
 //                                    visibile(linear_map_rcs);
@@ -2646,6 +2769,15 @@ public class BoxFragment extends BaseFragment {
                 showFragment(BoxFragment.this, wcsCarOperateFragment);
                 break;
 
+            case R.id.linear_map_charging_pile_state:// 所有充电桩状态查看界面
+
+                bl_all_charger_status = true;// 显示充电桩状态 dialog
+                ProgressBarUtil.showProgressBar(getContext(), "");
+                setUpConnectionFactory();
+                subscribeCheckChargerStatus(inComingMessageHandler);
+
+                break;
+
             case R.id.linear_map_rcs:// 跳转到rcs的小车操作界面
                 RcsCarOperateFragment rcsCarOperateFragment = new RcsCarOperateFragment();
                 if (errorChargings.size() != 0){
@@ -2679,6 +2811,7 @@ public class BoxFragment extends BaseFragment {
                     visibile(linear_lock_unlock);
                     gone(linear_map_carLockUnLock);
                     gone(linear_map_carBatteryInfo);
+                    gone(linear_map_charging_pile_state);
                     gone(linear_map_wcs);
                     gone(linear_map_rcs);
                     gone(linear_zoomOutIn);
@@ -2692,6 +2825,7 @@ public class BoxFragment extends BaseFragment {
                 gone(linear_lock_unlock);
                 visibile(linear_map_carLockUnLock);
                 visibile(linear_map_carBatteryInfo);
+                visibile(linear_map_charging_pile_state);
                 // 源汇定制
                 visibile(linear_map_wcs);
 //                visibile(linear_map_rcs);
@@ -2743,6 +2877,7 @@ public class BoxFragment extends BaseFragment {
                                 gone(linear_lock_unlock);
                                 visibile(linear_map_carLockUnLock);
                                 visibile(linear_map_carBatteryInfo);
+                                visibile(linear_map_charging_pile_state);
                                 // 源汇定制
                                 visibile(linear_map_wcs);
 //                                visibile(linear_map_rcs);
@@ -2817,6 +2952,56 @@ public class BoxFragment extends BaseFragment {
     }
 
     /**
+     * 监听rabbitmq获取所有的充电桩状态消息
+     * @param handler
+     */
+    private void subscribeCheckChargerStatus(final Handler handler) {
+
+        threadCheckChargerStatus = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if(connection_checkChargerStatus != null && connection_checkChargerStatus.isOpen()){
+                        connection_checkChargerStatus.close();
+                    }
+                    connection_checkChargerStatus = factory.newConnection();
+                    Channel channel = connection_checkChargerStatus.createChannel();
+                    channel.basicQos(0,1,false);
+                    // 创建随机队列，可持续，自动删除
+                    String queueName = System.currentTimeMillis() + "QN_CHECK_ALL_CHARGER_STATUS";
+                    channel.exchangeDeclare(Constants.EXCHANGE, "direct", true);
+                    AMQP.Queue.DeclareOk q = channel.queueDeclare(queueName, true, false, true, null);// 声明共享队列
+                    channel.queueBind(q.getQueue(), Constants.EXCHANGE, Constants.MQ_ROUTINGKEY_CHARGING_PILE_WCS_CHARGERS_INFO_RESPONSE);
+
+                    Consumer consumer = new DefaultConsumer(channel){
+                        @Override
+                        public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                            super.handleDelivery(consumerTag, envelope, properties, body);
+
+                            // 发消息通知UI更新
+                            Message message = handler.obtainMessage();
+                            message.obj = body;
+                            message.what = WHAT_CHECK_ALL_CHARGER_STATUS;
+                            handler.sendMessage(message);
+                        }
+                    };
+                    channel.basicConsume(q.getQueue(), true, consumer);
+
+                } catch (Exception e){
+                    e.printStackTrace();
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+        threadCheckChargerStatus.start();// 开启线程获取RabbitMQ推送消息
+
+    }
+
+    /**
      * 初始化小车数据
      */
     private void initCarData() {
@@ -2851,6 +3036,7 @@ public class BoxFragment extends BaseFragment {
             gone(linear_lock_unlock);
 //            visibile(linear_map_carLockUnLock);
             visibile(linear_map_carBatteryInfo);
+            visibile(linear_map_charging_pile_state);
             // 源汇定制
             visibile(linear_map_wcs);
 //            visibile(linear_map_rcs);
@@ -3444,6 +3630,7 @@ public class BoxFragment extends BaseFragment {
         linear_map_drawAgain.setVisibility(View.GONE);
         linear_map_carLockUnLock.setVisibility(View.GONE);
         gone(linear_map_carBatteryInfo);
+        gone(linear_map_charging_pile_state);
         gone(linear_map_wcs);
         gone(linear_map_rcs);
         gone(linear_error_tip);// 隐藏错误反馈提示
@@ -4409,6 +4596,7 @@ public class BoxFragment extends BaseFragment {
         interruptThread(threadNoMoveTimeout);
         interruptThread(threadErrorCloseConnection);
         interruptThread(threadChargingError);
+        interruptThread(threadCheckChargerStatus);
         if(requestQueue != null){
             requestQueue.stop();// 停止缓存和网络调度程序
         }
