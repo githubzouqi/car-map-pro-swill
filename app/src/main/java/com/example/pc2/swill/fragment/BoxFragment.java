@@ -649,6 +649,7 @@ public class BoxFragment extends BaseFragment {
                         threadCheckChargerStatus = null;
                     }
                     dialog_all_charger_status = null;
+                    view_all_charger_status = null;
                 }
             });
         }
