@@ -603,6 +603,10 @@ public class BoxFragment extends BaseFragment {
 //                    } catch (Exception e) {
 //                        e.printStackTrace();
 //                    }
+
+                    str_all_charger_status = "";
+                    chargerStatusEntities.clear();
+
                     if (mapChargerStatus != null && mapChargerStatus.size() != 0){
                         setChargerStatusData(mapChargerStatus);
                     }
@@ -665,10 +669,6 @@ public class BoxFragment extends BaseFragment {
      */
     private void setChargerStatusData(Map<String, Object> mapChargerStatus) {
         try{
-
-            // 一定记得清空数据
-            str_all_charger_status = "";
-            chargerStatusEntities.clear();
 
             List<Map<String, Object>> chargerStatusList = (List<Map<String, Object>>) mapChargerStatus.get("chargers");
             for (int i = 0;i < chargerStatusList.size();i++){
@@ -2771,6 +2771,10 @@ public class BoxFragment extends BaseFragment {
                 break;
 
             case R.id.linear_map_charging_pile_state:// 所有充电桩状态查看界面
+
+                // 一定记得清空数据
+                str_all_charger_status = "";
+                chargerStatusEntities.clear();
 
                 bl_all_charger_status = true;// 显示充电桩状态 dialog
                 ProgressBarUtil.showProgressBar(getContext(), "");

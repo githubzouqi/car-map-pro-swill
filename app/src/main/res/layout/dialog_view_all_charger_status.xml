@@ -18,7 +18,7 @@
     <TextView
         android:id="@+id/tv_fresh_data_time"
         android:padding="10dp"
-        android:text=""
+        android:text="暂无数据"
         android:gravity="center"
         android:textSize="16sp"
         android:textColor="@color/colorAccent"
