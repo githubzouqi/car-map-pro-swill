@@ -1306,10 +1306,20 @@ public class BoxFragment extends BaseFragment {
         // Required empty public constructor
     }
 
+    private View mView = null;// 保存fragment显示的view
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if (mView != null){
+            ViewGroup parent = (ViewGroup) mView.getParent();
+            if (parent != null){
+                parent.removeView(mView);
+            }
+            return mView;
+        }
+
         View view = inflater.inflate(R.layout.fragment_box, container, false);
         ButterKnife.bind(this, view);// butterknife的绑定
         init();// 初始化数据
@@ -1317,7 +1327,7 @@ public class BoxFragment extends BaseFragment {
         requestPermission();// 申请权限
 
         setListener();// 设置监听
-        LogUtil.e("Enjoy","onCreateView");
+        mView = view;
         return view;
     }
 
