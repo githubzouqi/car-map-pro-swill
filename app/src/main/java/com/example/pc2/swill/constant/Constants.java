@@ -18,11 +18,11 @@ public class Constants {
 
     // https://api.mushiny.com/wcs/checkRobotStatus?sectionId=ec229eb7-7e2b-43a8-b1c7-91bd807e91cf&robotId=6
 //    public static final String HTTP = "https://";// https请求 源汇版
-    public static final String HTTP = "http://";// http请求：史必诺SWill
+    public static final String HTTP = "http://";// http请求：speedlog
 //    public static String ROOT_ADDRESS = "api.mushiny.com";// 接口地址 源汇版
 //    public static String ROOT_ADDRESS = "192.168.0.72:22009";// 接口地址：费舍尔版
 //    public static String ROOT_ADDRESS = "192.168.10.211:12009";// 接口地址：美的版
-    public static String ROOT_ADDRESS = "192.168.1.202:12009";// 接口地址：SWill
+    public static String ROOT_ADDRESS = "192.168.1.202:12009";// 接口地址：speedlog
 
     public static final int DEFAULT_BOX_SIZE = 45;// 设置地图绘制时格子的默认大小
 
@@ -39,13 +39,13 @@ public class Constants {
 //    public static String MQ_HOST = "52.83.227.228";// MQ主机地址 源汇版
 //    public static String MQ_HOST = "192.168.0.72";// 主机地址：费舍尔版
 //    public static String MQ_HOST = "192.168.10.212";// 主机地址：美的版
-//    public static String MQ_HOST = "123.249.28.97";// 外网主机地址：SWill
-    public static String MQ_HOST = "192.168.1.202";// 内网主机地址：SWill
-    public static int MQ_PORT = 5672;// MQ端口号：源汇版、费舍尔版、美的版、SWill
+//    public static String MQ_HOST = "123.249.28.97";// 外网主机地址：speedlog
+    public static String MQ_HOST = "192.168.1.202";// 内网主机地址：speedlog
+    public static int MQ_PORT = 5672;// MQ端口号：源汇版、费舍尔版、美的版、speedlog
 //    public static String MQ_USERNAME = "nt_yuan_hui";// MQ用户名 源汇版
-    public static String MQ_USERNAME = "mushiny";// 用户名：费舍尔版、美的版、SWill
+    public static String MQ_USERNAME = "mushiny";// 用户名：费舍尔版、美的版、speedlog
 //    public static String MQ_PASSWORD = "yhYHzaq";// MQ密码 源汇版
-    public static String MQ_PASSWORD = "mushiny";// 密码：费舍尔版、美的版、SWill
+    public static String MQ_PASSWORD = "mushiny";// 密码：费舍尔版、美的版、speedlog
 
     public static final String MQ_ROUTINGKEY_MAP = "WCS_RCS_MAP_RESPONSE";// 地图的路由键测试
     //    public static final String MQ_EXCHANGE_MAP = "section1";// 地图的交换机测试

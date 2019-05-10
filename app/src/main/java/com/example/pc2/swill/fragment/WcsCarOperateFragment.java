@@ -935,6 +935,7 @@ public class WcsCarOperateFragment extends BaseFragment{
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
+                                            dialog_operate.dismiss();
                                             interruptThread(publishThread);
                                         }
                                     })
@@ -951,8 +952,9 @@ public class WcsCarOperateFragment extends BaseFragment{
                                             } catch (InterruptedException e) {
                                                 e.printStackTrace();
                                             }
-                                            getActivity().getSupportFragmentManager().popBackStack();
+//                                            getActivity().getSupportFragmentManager().popBackStack();
                                             dialog.dismiss();
+                                            dialog_operate.dismiss();
 
                                         }
                                     }).create().show();
@@ -1307,7 +1309,7 @@ public class WcsCarOperateFragment extends BaseFragment{
     private void method2FinishTripByPodId(String podId) {
 
         ProgressBarUtil.showProgressBar(getContext(), "结束任务......");
-        String url = rootAddress + getResources().getString(R.string.url_speedlog_finishTripByRobot)
+        String url = rootAddress + getResources().getString(R.string.url_speedlog_finishTripByPod)
                 + "sectionId=" + sectionId + "&podId=" + podId;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,
@@ -1321,7 +1323,17 @@ public class WcsCarOperateFragment extends BaseFragment{
                             String result = response.optString("result");
 
                             if ("success".equals(result)){
-                                ToastUtil.showToast(getContext(), "结束任务成功");
+                                new AlertDialog.Builder(getContext())
+                                        .setTitle("温馨提示")
+                                        .setIcon(R.mipmap.app_icon)
+                                        .setMessage("👀取消任务成功👀\n别忘记执行：更新小车可用、释放pod状态操作哦！")
+                                        .setCancelable(false)
+                                        .setPositiveButton("我知道了", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        }).create().show();
                             }else if("failure".equals(result)){
                                 ToastUtil.showToast(getContext(), "结束任务失败：" + response.optString("msg"));
                             }
@@ -1364,7 +1376,17 @@ public class WcsCarOperateFragment extends BaseFragment{
                             String result = response.optString("result");
 
                             if ("success".equals(result)){
-                                ToastUtil.showToast(getContext(), "结束任务成功");
+                                new AlertDialog.Builder(getContext())
+                                        .setTitle("温馨提示")
+                                        .setIcon(R.mipmap.app_icon)
+                                        .setMessage("👀取消任务成功👀\n别忘记执行：更新小车可用、释放pod状态操作哦！")
+                                        .setCancelable(false)
+                                        .setPositiveButton("我知道了", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        }).create().show();
                             }else if("failure".equals(result)){
                                 ToastUtil.showToast(getContext(), "结束任务失败：" + response.optString("msg"));
                             }

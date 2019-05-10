@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">史必诺地图</string>
+    <string name="app_name">SpeedlogMap</string>
 
-    <string name="splash_slogan">史必诺地图\n智能监控</string>
+    <string name="splash_slogan">Speedlog地图\n智能监控</string>
 
     <string name="please_draw_map_first">明察秋毫，尽在掌控</string>
     <string name="confirm">确认</string>
