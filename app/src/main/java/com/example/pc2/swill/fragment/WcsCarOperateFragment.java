@@ -1240,13 +1240,14 @@ public class WcsCarOperateFragment extends BaseFragment{
                                     .setPositiveButton("取消", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            method2FinishTripByRobotId(robotId);
+                                            dialog.dismiss();
                                         }
                                     })
                                     .setNegativeButton("好的", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-
+                                            dialog.dismiss();
+                                            method2FinishTripByRobotId(robotId);
                                         }
                                     }).create().show();
 
@@ -1278,13 +1279,14 @@ public class WcsCarOperateFragment extends BaseFragment{
                                     .setPositiveButton("取消", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            method2FinishTripByPodId(podId);
+                                            dialog.dismiss();
                                         }
                                     })
                                     .setNegativeButton("好的", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-
+                                            dialog.dismiss();
+                                            method2FinishTripByPodId(podId);
                                         }
                                     }).create().show();
 
