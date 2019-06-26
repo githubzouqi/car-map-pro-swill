@@ -54,7 +54,8 @@ public class Constants {
     // 小车实时包的交换机名称和路由键
 //    public static final String MQ_EXCHANGE_CAR = "section1";
     public static final String MQ_QUEUE_CAR = "RCS_WCS_ROBOT_RT_MD";
-    public static final String MQ_ROUTINGKEY_CAR = "RCS_WCS_ROBOT_RT_MD";
+//    public static final String MQ_ROUTINGKEY_CAR = "RCS_WCS_ROBOT_RT_MD";
+    public static final String MQ_ROUTINGKEY_CAR = "RCS_WCS_ROBOT_RT";
 
     // 仓库和地图初始化
     public static final String MQ_EXCHANGE_STORAGEMAP = "ANY_WAREHOUSE_INIT";// 交换机名称
@@ -103,4 +104,7 @@ public class Constants {
 
     // 所有充电桩的状态
     public static final String MQ_ROUTINGKEY_CHARGING_PILE_WCS_CHARGERS_INFO_RESPONSE = "CHARGING_PILE_WCS_CHARGERS_INFO_RESPONSE";
+
+    // 小车心跳包监听
+    public static final String MQ_ROUTINGKEY_ROBOT_HEART_BEAT= "RCS_WCS_ROBOT_HEART_BEAT";
 }

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,6 +32,7 @@ import com.example.pc2.swill.R;
 import com.example.pc2.swill.constant.Constants;
 import com.example.pc2.swill.utils.LogUtil;
 import com.example.pc2.swill.utils.ProgressBarUtil;
+import com.example.pc2.swill.utils.SPUtil;
 import com.example.pc2.swill.utils.ToastUtil;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -73,6 +75,7 @@ public class WcsCarOperateFragment extends BaseFragment{
     private static final int WHAT_RESEND_ORDER = 0x13;// 重发任务
     private static final int WHAT_OFFLINE = 0x14;// 下线某小车
     private static final int WHAT_DRIVE_POD = 0x15;// 驱动pod去某地
+    private static final int WHAT_POD_ADDR_UPDATE = 0x16;// 更新 pod 地址
     private RequestQueue requestQueue;// volley请求队列
     private String rootAddress = "";// 请求地址根路径
     private View viewShowContent = null;
@@ -86,6 +89,8 @@ public class WcsCarOperateFragment extends BaseFragment{
 
     private ConnectionFactory factory = new ConnectionFactory();// 声明ConnectionFactory对象
     private Thread publishThread = null;// 发布消息消费线程
+
+    private SPUtil spUtil;
 
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler(){
@@ -126,6 +131,39 @@ public class WcsCarOperateFragment extends BaseFragment{
                     break;
                 case WHAT_DRIVE_POD:// 驱动POD去某地
                     ToastUtil.showToast(getContext(),"POD驱动去目标点位成功");
+                    break;
+                case WHAT_POD_ADDR_UPDATE:// 更新 pod 地址
+                    try {
+                        interruptPublishThread();
+                        setUpConnectionFactory();
+                        publishToAMPQ(Constants.EXCHANGE, Constants.MQ_ROUTINGKEY_CHANGING_POD_POSITION);
+
+                        long sectionID = Long.parseLong(Constants.SECTION_RCS_ID);
+                        int podCodeID = msg.arg1;
+                        int addressCodeID = msg.arg2;
+
+                        Map<String, Object> message = new HashMap<>();
+                        message.put("podCodeID", podCodeID);
+                        message.put("addressCodeID", addressCodeID);
+                        message.put("sectionID", sectionID);
+                        message.put("time", System.currentTimeMillis());
+                        queue.putLast(message);
+
+                        ToastUtil.showToast(getContext(), "地图更新"+ podCodeID +"号POD到地址"+ addressCodeID +"指令已经发布");
+
+                        // 存入SharedPreferences中作缓存用
+                        spUtil.clearDataByName(SPUtil.NAME_UPDATE_POD_SUCCESS);
+
+                        SharedPreferences sp = spUtil.getSPByName(SPUtil.NAME_UPDATE_POD_SUCCESS);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putInt(SPUtil.KEY_UPDATE_POD_SUCCESS_PODID,podCodeID);
+                        editor.putInt(SPUtil.KEY_UPDATE_POD_SUCCESS_ADDRESS, addressCodeID);
+                        editor.apply();
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        ToastUtil.showToast(getContext(), "地图添加POD消息发布异常：" + e.getMessage());
+                    }
                     break;
             }
         }
@@ -330,6 +368,12 @@ public class WcsCarOperateFragment extends BaseFragment{
         tv_fragment_title.setText(CURRENT_FRAGMENT_TITLE);
     }
 
+    private void null2CreateSPUtil(){
+        if (spUtil == null){
+            spUtil = new SPUtil(getContext());
+        }
+    }
+
     /**
      * 初始化数据
      */
@@ -342,6 +386,7 @@ public class WcsCarOperateFragment extends BaseFragment{
 
         pDialog = new ProgressDialog(getContext());
         pDialog.setCanceledOnTouchOutside(true);
+        null2CreateSPUtil();
     }
 
     /**
@@ -1791,7 +1836,7 @@ public class WcsCarOperateFragment extends BaseFragment{
      * @param podId
      * @param addrCodeId
      */
-    private void methodUpdatePodStatus(String podId, String addrCodeId) {
+    private void methodUpdatePodStatus(final String podId, final String addrCodeId) {
         showDialog("加载中...");
 
         String url = rootAddress + getResources().getString(R.string.url_updatePodPos)
@@ -1808,7 +1853,14 @@ public class WcsCarOperateFragment extends BaseFragment{
                             ToastUtil.showToast(getContext(), "POD或更新地址填写不正确");
                             return;
                         }else {
-                            ToastUtil.showToast(getContext(),response);
+                            if ("ok".equals(response)){
+                                ToastUtil.showToast(getContext(), "更新成功");
+                                Message message = handler.obtainMessage();
+                                message.what = WHAT_POD_ADDR_UPDATE;
+                                message.arg1 = Integer.parseInt(podId);
+                                message.arg2 = Integer.parseInt(addrCodeId);
+                                handler.sendMessage(message);
+                            }
                         }
 
 
@@ -2195,6 +2247,16 @@ public class WcsCarOperateFragment extends BaseFragment{
     private void interruptThread(Thread thread) {
         if(thread != null){
             thread.interrupt();
+        }
+    }
+
+    /**
+     * 中断发布消息线程
+     */
+    private void interruptPublishThread() {
+        if(publishThread != null){
+            publishThread.interrupt();
+            publishThread = null;
         }
     }
 
