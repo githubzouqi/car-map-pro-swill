@@ -1853,13 +1853,15 @@ public class WcsCarOperateFragment extends BaseFragment{
                             ToastUtil.showToast(getContext(), "POD或更新地址填写不正确");
                             return;
                         }else {
-                            if ("ok".equals(response)){
+                            if (response.contains("address")){
                                 ToastUtil.showToast(getContext(), "更新成功");
                                 Message message = handler.obtainMessage();
                                 message.what = WHAT_POD_ADDR_UPDATE;
                                 message.arg1 = Integer.parseInt(podId);
                                 message.arg2 = Integer.parseInt(addrCodeId);
                                 handler.sendMessage(message);
+                            }else{
+                                ToastUtil.showToast(getContext(),"" + response);
                             }
                         }
 
@@ -1871,7 +1873,7 @@ public class WcsCarOperateFragment extends BaseFragment{
                     public void onErrorResponse(VolleyError error) {
                         dissMissDialog();
                         dialog_operate.dismiss();
-                        ToastUtil.showToast(getContext(), "更新POD地址异常");
+                        ToastUtil.showToast(getContext(), "更新POD地址失败：" + error.getMessage());
                     }
                 });
 

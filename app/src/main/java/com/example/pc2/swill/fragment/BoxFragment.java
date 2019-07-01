@@ -129,6 +129,7 @@ public class BoxFragment extends BaseFragment {
     private static final int WHAT_CHECK_ALL_CHARGER_STATUS = 0x27;// 所有充电桩的状态
     private static final long RELEASE_POD_TIME = 5000;// 延迟消息不间断释放pod延迟时间
     private static final int WHAT_ROBOT_HEART_BEAT = 0x28;// AGV 心跳消息
+    private static final int WHAT_PDA_SCAN_POD = 0x29;// PDA 扫描pod后离场
 
     private ConnectionFactory factory = new ConnectionFactory();// 声明ConnectionFactory对象
 
@@ -224,6 +225,7 @@ public class BoxFragment extends BaseFragment {
     private Thread threadChargingError = null;// 小车充电故障线程
     private Thread threadCheckChargerStatus = null;// 所有充电桩状态消费线程
     private Thread threadHeartBeat = null;// AGV 心跳消息
+    private Thread threadPdaScanPod = null;// pda 扫完货架离场
 
     private Connection connection_map;// 初始化地图数据的连接
     private Connection connection_car;// 初始化小车数据的连接
@@ -234,6 +236,8 @@ public class BoxFragment extends BaseFragment {
     private Connection connection_noMoveTimeout;// 小车位置不改变超时
     private Connection connection_errorCloseConnection;// 小车断开连接
     private Connection connection_chargingError;// 小车充电故障
+    private Connection connection_heartBeat;// 小车心跳包消息
+    private Connection connection_PDAScanPod;// pda 扫完货架离场后的消息监听
     private Connection connection_checkChargerStatus;// 所有充电桩的状态
 
     private int boxSizeChange;// 放大或者缩小地图时需要的参数
@@ -478,8 +482,10 @@ public class BoxFragment extends BaseFragment {
                     interruptThread(threadNoMoveTimeout);
                     interruptThread(threadErrorCloseConnection);
                     interruptThread(threadChargingError);
+                    interruptThread(threadHeartBeat);
                     interruptThread(threadCheckChargerStatus);
                     interruptThread(threadShowAllCarCurrentPath);
+                    interruptThread(threadPdaScanPod);
                     clearData();
                     publishToAMPQ(Constants.MQ_EXCHANGE_STORAGEMAP, Constants.MQ_ROUTINGKEY_STORAGEMAP_REQUEST);// publish消息给请求队列
                     selectStorageMap();
@@ -496,11 +502,11 @@ public class BoxFragment extends BaseFragment {
                 case WHAT_ROBOT_ERROR:// 小车错误反馈
                     byte[] bodyProblemFeedback = (byte[]) msg.obj;
                     Map<String, Object> mapProblemFeedback = (Map<String, Object>) toObject(bodyProblemFeedback);
-//                    try {
-//                        FileUtil.createFileWithByte(mapProblemFeedback.toString().getBytes("utf-8"),"错误反馈信息.doc");
-//                    } catch (UnsupportedEncodingException e) {
-//                        e.printStackTrace();
-//                    }
+                    try {
+                        FileUtil.createFileWithByte(mapProblemFeedback.toString().getBytes("utf-8"),"AGV 错误反馈信息.doc");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     if (robotErrorEntityList.size() == 0){
                         if (vibrator != null){
                             vibrator.vibrate(new long[]{1000,2000}, 0);// 震动
@@ -644,6 +650,34 @@ public class BoxFragment extends BaseFragment {
                         boxView.setCarAndPodData(carList, podList);// 小车开始绘制并实时更新小车的路径信息
                     }
 
+                    break;
+
+                case WHAT_PDA_SCAN_POD:// PDA 扫描伙计成功离场消息
+
+                    byte[] bodyPDAScanPod = (byte[]) msg.obj;
+                    Map<String, Object> mapPdaScanPod = (Map<String, Object>) toObject(bodyPDAScanPod);
+
+//                    try {
+//                        FileUtil.createFileWithByte(mapPdaScanPod.toString().getBytes("utf-8"),"PDA扫描料架成功离场返回数据.doc");
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+
+                    if (mapPdaScanPod != null && mapPdaScanPod.size() != 0){
+                        // {exchangeName=section1, routingKey=WCS_RCS_CHANGING_POD_POSITION, podCodeID=69, addressCodeID=0, wcsTime=1561710502666}
+
+                        int pdaScanPodId = Integer.parseInt(String.valueOf(mapPdaScanPod.get("podCodeID")));
+                        int pdaScanAddressCodeID = Integer.parseInt(String.valueOf(mapPdaScanPod.get("addressCodeID")));
+                        // 地图移除成功离场的货架
+                        for (int i = 0;i < podList.size();i++){
+                            if((pdaScanPodId == podList.get(i).getPodId()) && (pdaScanPodId > 0) &&(pdaScanAddressCodeID == 0)){
+                                // 移除集合中的PodEntity对象
+                                podList.remove(i);
+                            }
+                        }
+                    }else{
+                        ToastUtil.showToast(getContext(), "PDA扫描料架成功离场上报信息为空");
+                    }
                     break;
             }
         }
@@ -931,10 +965,16 @@ public class BoxFragment extends BaseFragment {
     }
 
     /**
-     * 设置小车错误数据
+     * AGV 错误反馈信息 数据解析获取
      * @param mapRobotError
      */
     private void setRobotErrorData(Map<String, Object> mapRobotError) {
+
+        /**
+         *  扫不到pod返回数据：{curPodID=0, robotID=173, sectionID=1, errorCode=8200, errorTime=1561702478432, errorStatus=0, podCodeID=4, errorID=2}
+         *  丢码返回数据：{curPodID=1857, robotID=173, sectionID=1, errorCode=8199, errorTime=1561702812993, errorStatus=0, podCodeID=468, errorID=0}
+         */
+
         try {
             // 取值
             int robotID = Integer.parseInt(String.valueOf(mapRobotError.get("robotID")));
@@ -979,8 +1019,7 @@ public class BoxFragment extends BaseFragment {
             }
         }catch (Exception e){
             e.printStackTrace();
-            ToastUtil.showToast(getContext(),e.getMessage());
-            ToastUtil.showToast(getContext(),"小车错误反馈数据解析异常");
+            ToastUtil.showToast(getContext(),"小车错误反馈数据解析异常：" + e.getMessage());
         }
     }
 
@@ -3112,6 +3151,7 @@ public class BoxFragment extends BaseFragment {
             subscribeProblemFeedback(inComingMessageHandler);// 小车错误信息反馈监听
             subscribeNoMoveTimeout(inComingMessageHandler);// 小车位置不改变超时
             subscribeErrorCloseConnection(inComingMessageHandler);// 小车断开连接
+            subscribePDAScanRemovePod(inComingMessageHandler);// 史必诺现场人员pda扫完货架离场成功后的消息监听，运维工具只需要将这个货架从地图上移除即可
 
             // 源汇版本 添加安全区域锁格显示
             subscribeShowAllCarCurrentPath(inComingMessageHandler);
@@ -3156,6 +3196,57 @@ public class BoxFragment extends BaseFragment {
     }
 
     /**
+     * pda 扫货架成功离场后的消息监听
+     * @param handler
+     */
+    private void subscribePDAScanRemovePod(final Handler handler) {
+
+        threadPdaScanPod = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try{
+                    if (connection_PDAScanPod != null && connection_PDAScanPod.isOpen()){
+                        connection_PDAScanPod.close();
+                    }
+                    connection_PDAScanPod = factory.newConnection();
+                    Channel channel = connection_PDAScanPod.createChannel();
+                    channel.basicQos(1);// 一次消费一条消息，消费完再接收下一条消息
+
+                    String queueName = System.currentTimeMillis() + "QN_PDA_SCAN_POD_REMOVE";
+                    channel.exchangeDeclare(Constants.EXCHANGE, "direct", true);
+                    AMQP.Queue.DeclareOk q = channel.queueDeclare(queueName, true, false, true, null);
+                    channel.queueBind(q.getQueue(), Constants.EXCHANGE, Constants.MQ_ROUTINGKEY_CHANGING_POD_POSITION);
+                    Consumer consumer = new DefaultConsumer(channel){
+                        @Override
+                        public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                            super.handleDelivery(consumerTag, envelope, properties, body);
+                            Message message = handler.obtainMessage();
+                            message.what = WHAT_PDA_SCAN_POD;
+                            message.obj = body;
+                            handler.sendMessage(message);
+                        }
+                    };
+
+                    channel.basicConsume(q.getQueue(), true, consumer);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                    try {
+                        Thread.sleep(5000);
+                    }catch (InterruptedException e1){
+                        e1.printStackTrace();
+                    }
+                }
+
+            }
+        });
+
+        threadPdaScanPod.start();
+
+    }
+
+    /**
      * AGV 心跳消息监听
      * @param handler
      */
@@ -3166,11 +3257,11 @@ public class BoxFragment extends BaseFragment {
             public void run() {
 
                 try{
-                    if (connection_chargingError != null && connection_chargingError.isOpen()){
-                        connection_chargingError.close();
+                    if (connection_heartBeat != null && connection_heartBeat.isOpen()){
+                        connection_heartBeat.close();
                     }
-                    connection_chargingError = factory.newConnection();
-                    Channel channel = connection_chargingError.createChannel();
+                    connection_heartBeat = factory.newConnection();
+                    Channel channel = connection_heartBeat.createChannel();
                     channel.basicQos(1);// 一次消费一条消息，消费完再接收下一条消息
 
                     String queueName = System.currentTimeMillis() + "QN_HEART_BEAT";
@@ -3291,20 +3382,36 @@ public class BoxFragment extends BaseFragment {
     private void getAndSetErrorContent() {
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        // 扫不到pod错误反馈
-        String strPodError = "扫不到pod错误反馈";
+        // AGV 错误信息反馈
+
+        /**
+         *  扫不到pod返回数据：{curPodID=0, robotID=173, sectionID=1, errorCode=8200, errorTime=1561702478432, errorStatus=0, podCodeID=4, errorID=2}
+         *  丢码返回数据：{curPodID=1857, robotID=173, sectionID=1, errorCode=8199, errorTime=1561702812993, errorStatus=0, podCodeID=468, errorID=0}
+         */
+
+        String strPodError = "AGV 错误反馈信息";
         if (robotErrorEntityList.size() != 0){
             for (int  i = 0;i < robotErrorEntityList.size();i++){
-                strPodError = strPodError + "\n\n" + "小车id：" + robotErrorEntityList.get(i).getRobotID()
-                        + "\n" + "反馈时间：" + format.format(new Date(robotErrorEntityList.get(i).getErrorTime()))
-                        + "\n" + "将要扫的pod：" + robotErrorEntityList.get(i).getPodCodeID()
-                        + "\n" + "当前扫到的pod：" + robotErrorEntityList.get(i).getCurPodID()
-                        + "\n\n" + "➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖";
+
+                if (robotErrorEntityList.get(i).getErrorID().equals("2")){
+                    strPodError = strPodError + "\n\n" + "小车id：" + robotErrorEntityList.get(i).getRobotID()
+                            + "\n" + "反馈时间：" + format.format(new Date(robotErrorEntityList.get(i).getErrorTime()))
+                            + "\n" + "将要扫的pod：" + robotErrorEntityList.get(i).getPodCodeID()
+                            + "\n" + "当前扫到的pod：" + robotErrorEntityList.get(i).getCurPodID()
+                            + "\n\n" + "➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖";
+                }
+
+                if (robotErrorEntityList.get(i).getErrorID().equals("0")){
+                    strPodError = strPodError + "\n\n" + robotErrorEntityList.get(i).getRobotID() + " 号小车在 " +
+                            robotErrorEntityList.get(i).getPodCodeID() + " 点位丢码，请及时确认现场情况。" +
+                            "\n\n" + "➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖";
+                }
+
             }
         }
-//        else {
-//            strPodError = strPodError + "\n\n" + "无" + "\n\n" + "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
-//        }
+        else {
+            strPodError = "";
+        }
 
         // 小车位置不改变超时
         String strNoMoveTimeout = "小车位置不改变超时";
@@ -3316,9 +3423,9 @@ public class BoxFragment extends BaseFragment {
                         + "\n\n" + "➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖️";
             }
         }
-//        else {
-//            strNoMoveTimeout = strNoMoveTimeout + "\n\n" + "无" + "\n\n" + "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
-//        }
+        else {
+            strNoMoveTimeout = "";
+        }
 
         // 小车断开连接
         String strCloseConn = "小车断开连接";
@@ -3331,9 +3438,9 @@ public class BoxFragment extends BaseFragment {
                         + "\n\n" + "➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖";
             }
         }
-//        else {
-//            strCloseConn = strCloseConn + "\n\n" + "无" + "\n\n" + "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
-//        }
+        else {
+            strCloseConn = "";
+        }
 
         // 充电桩故障
         String strChargingError = "充电桩故障";
@@ -3346,9 +3453,9 @@ public class BoxFragment extends BaseFragment {
                 + "\n\n" + "➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖";
             }
         }
-//        else {
-//            strChargingError = strChargingError + "\n\n" + "无" + "\n\n" + "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
-//        }
+        else {
+            strChargingError = "";
+        }
 
         strErrorContent = strPodError + "\n\n" + strNoMoveTimeout + "\n\n" + strCloseConn + "\n\n" + strChargingError;
 
@@ -4738,6 +4845,8 @@ public class BoxFragment extends BaseFragment {
         interruptThread(threadNoMoveTimeout);
         interruptThread(threadErrorCloseConnection);
         interruptThread(threadChargingError);
+        interruptThread(threadPdaScanPod);
+        interruptThread(threadHeartBeat);
         interruptThread(threadCheckChargerStatus);
         if(requestQueue != null){
             requestQueue.stop();// 停止缓存和网络调度程序
@@ -4820,6 +4929,9 @@ public class BoxFragment extends BaseFragment {
                 }
                 if (connection_chargingError != null){
                     connection_chargingError.abort();// 终止充电故障监听
+                }
+                if (connection_heartBeat != null){
+                    connection_heartBeat.abort();
                 }
                 // 给handler发消息清空原有数据
                 Message message = inComingMessageHandler.obtainMessage();

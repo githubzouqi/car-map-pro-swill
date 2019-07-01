@@ -82,7 +82,7 @@ public class Constants {
 
     // 小车位置不改变超时
 //    public static final String MQ_EXCHANGE_NOMOVE_TIMEOUT = "";
-    public static final String MQ_ROUTINGKEY_NOMOVE_TIMEOUT = "RCS_WCS_AGV_NOMOVE_TIMEOUT";
+    public static final String MQ_ROUTINGKEY_NOMOVE_TIMEOUT = "RCS_WCS_AGV_NOMOVE_TIMMEOUT";
 
     // 小车连接断开
     public static final String MQ_ROUTINGKEY_CLOSE_CONNECTION = "RCS_WCS_ROBOT_CLOSE_CONNECTION";
@@ -107,4 +107,5 @@ public class Constants {
 
     // 小车心跳包监听
     public static final String MQ_ROUTINGKEY_ROBOT_HEART_BEAT= "RCS_WCS_ROBOT_HEART_BEAT";
+
 }
