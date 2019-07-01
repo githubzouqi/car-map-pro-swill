@@ -652,7 +652,7 @@ public class BoxFragment extends BaseFragment {
 
                     break;
 
-                case WHAT_PDA_SCAN_POD:// PDA 扫描伙计成功离场消息
+                case WHAT_PDA_SCAN_POD:// PDA 扫描货架成功离场消息
 
                     byte[] bodyPDAScanPod = (byte[]) msg.obj;
                     Map<String, Object> mapPdaScanPod = (Map<String, Object>) toObject(bodyPDAScanPod);
@@ -984,6 +984,11 @@ public class BoxFragment extends BaseFragment {
             int podCodeID = Integer.parseInt(String.valueOf(mapRobotError.get("podCodeID")));
             int curPodID = Integer.parseInt(String.valueOf(mapRobotError.get("curPodID")));
             String sectionID = String.valueOf(mapRobotError.get("sectionID"));
+            int errorCode = Integer.parseInt(String.valueOf(mapRobotError.get("errorCode")));
+
+            if (errorCode != 8199 && errorCode != 8200){
+                return;
+            }
 
             // 实体对象设置值
             RobotErrorEntity entity = new RobotErrorEntity();
@@ -994,6 +999,7 @@ public class BoxFragment extends BaseFragment {
             entity.setPodCodeID(podCodeID);
             entity.setCurPodID(curPodID);
             entity.setSectionID(sectionID);
+            entity.setErrorCode(errorCode);
 
             // list集合中保存实体对象
             if (robotErrorEntityList.size() == 0){
@@ -3393,16 +3399,16 @@ public class BoxFragment extends BaseFragment {
         if (robotErrorEntityList.size() != 0){
             for (int  i = 0;i < robotErrorEntityList.size();i++){
 
-                if (robotErrorEntityList.get(i).getErrorID().equals("2")){
-                    strPodError = strPodError + "\n\n" + "小车id：" + robotErrorEntityList.get(i).getRobotID()
+                if (robotErrorEntityList.get(i).getErrorCode() == 8200){
+                    strPodError = strPodError + "\n\n【检测不到货架】" + "小车id：" + robotErrorEntityList.get(i).getRobotID()
                             + "\n" + "反馈时间：" + format.format(new Date(robotErrorEntityList.get(i).getErrorTime()))
-                            + "\n" + "将要扫的pod：" + robotErrorEntityList.get(i).getPodCodeID()
-                            + "\n" + "当前扫到的pod：" + robotErrorEntityList.get(i).getCurPodID()
+                            + "\n" + "需要扫的货架号：" + robotErrorEntityList.get(i).getPodCodeID()
+                            + "\n" + "当前扫到的货架号：" + robotErrorEntityList.get(i).getCurPodID()
                             + "\n\n" + "➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖";
                 }
 
-                if (robotErrorEntityList.get(i).getErrorID().equals("0")){
-                    strPodError = strPodError + "\n\n" + robotErrorEntityList.get(i).getRobotID() + " 号小车在 " +
+                if (robotErrorEntityList.get(i).getErrorCode() == 8199){
+                    strPodError = strPodError + "\n\n【直行丢失中间码】" + robotErrorEntityList.get(i).getRobotID() + " 号小车在 " +
                             robotErrorEntityList.get(i).getPodCodeID() + " 点位丢码，请及时确认现场情况。" +
                             "\n\n" + "➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖";
                 }
@@ -3417,10 +3423,9 @@ public class BoxFragment extends BaseFragment {
         String strNoMoveTimeout = "小车位置不改变超时";
         if (noMoveTimeoutEntityList.size() != 0){
             for (int i = 0;i < noMoveTimeoutEntityList.size();i++){
-                strNoMoveTimeout = strNoMoveTimeout + "\n\n" + "小车id：" + noMoveTimeoutEntityList.get(i).getRobotID()
-                        + "\n" + "ip地址：" + noMoveTimeoutEntityList.get(i).getIp()
-                        + "\n" + "端口：" + noMoveTimeoutEntityList.get(i).getPort()
-                        + "\n\n" + "➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖️";
+                strNoMoveTimeout = strNoMoveTimeout + "\n\n" + "AGV 号码：" + noMoveTimeoutEntityList.get(i).getRobotID()
+                        + "\n" + "AGV 当前所处位置：" + noMoveTimeoutEntityList.get(i).getCurrentAddress()
+                        + "\n\n" + "➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖";
             }
         }
         else {

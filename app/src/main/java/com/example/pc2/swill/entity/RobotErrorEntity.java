@@ -17,6 +17,15 @@ public class RobotErrorEntity implements Parcelable {
     private int podCodeID;// 将要扫的pod
     private int curPodID;// 当前扫到的pod
     private String sectionID;
+    private int errorCode;// 故障id
+
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
+    }
 
     public RobotErrorEntity() {
     }
@@ -103,8 +112,9 @@ public class RobotErrorEntity implements Parcelable {
         dest.writeString(this.errorID);
         dest.writeString(this.errorStatus);
         dest.writeInt(this.podCodeID);
-        dest.writeString(this.sectionID);
         dest.writeInt(this.curPodID);
+        dest.writeString(this.sectionID);
+        dest.writeInt(this.errorCode);
     }
 
     protected RobotErrorEntity(Parcel in) {
@@ -113,11 +123,12 @@ public class RobotErrorEntity implements Parcelable {
         this.errorID = in.readString();
         this.errorStatus = in.readString();
         this.podCodeID = in.readInt();
-        this.sectionID = in.readString();
         this.curPodID = in.readInt();
+        this.sectionID = in.readString();
+        this.errorCode = in.readInt();
     }
 
-    public static final Parcelable.Creator<RobotErrorEntity> CREATOR = new Parcelable.Creator<RobotErrorEntity>() {
+    public static final Creator<RobotErrorEntity> CREATOR = new Creator<RobotErrorEntity>() {
         @Override
         public RobotErrorEntity createFromParcel(Parcel source) {
             return new RobotErrorEntity(source);
