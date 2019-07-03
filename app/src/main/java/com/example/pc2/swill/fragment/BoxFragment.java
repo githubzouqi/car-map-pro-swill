@@ -507,13 +507,13 @@ public class BoxFragment extends BaseFragment {
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-                    if (robotErrorEntityList.size() == 0){
+                    setRobotErrorData(mapProblemFeedback);
+                    if (robotErrorEntityList.size() != 0){
                         if (vibrator != null){
                             vibrator.vibrate(new long[]{1000,2000}, 0);// 震动
                         }
+                        visibile(linear_error_tip);
                     }
-                    setRobotErrorData(mapProblemFeedback);
-                    visibile(linear_error_tip);
                     break;
                 case WHAT_ROBOT_NOMOVE_TIMEOUT:// 小车位置不改变超时
                     byte[] bodyNoMoveTimeout = (byte[]) msg.obj;
